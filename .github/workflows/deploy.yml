@@ -1,0 +1,33 @@
+name: Deploy via FTP
+
+on:
+  push:
+    branches: [ "main" ]   # change if your default branch is different
+
+concurrency:
+  group: ftp-deploy-${{ github.ref }}
+  cancel-in-progress: true  # prevents overlapping deploys on fast pushes
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # First run? set dry-run: true to test, then remove it
+      - name: Deploy to FTP/FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }}/
+          protocol: ftp           # use 'ftp' if your host doesn't support FTPS
+          dry-run: false           # set true for a no-changes test
+          state-name: .ftp-deploy-sync-state.json
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/.vscode/**
+            **/node_modules/**
+            **/*.map
