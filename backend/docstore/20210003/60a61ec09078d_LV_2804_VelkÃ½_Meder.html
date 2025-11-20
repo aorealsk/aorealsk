@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESKN BO</title>
+    <style type="text/css">
+        .g-recaptcha-wrap {
+            display: block;
+            background: rgba(0,0,0,.05);
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99999999;
+        }
+
+            .g-recaptcha-wrap .g-recaptcha {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                -webkit-transform: translate(-50%,-50%);
+                -moz-transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+                -o-transform: translate(-50%,-50%);
+                transform: translate(-50%,-50%);
+            }
+    </style>
+
+    <script type="text/javascript" src="https://kataster.skgeodesy.sk/Portal/scripts/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+        var frame;
+        var captchaIsReady = false;
+
+        window.onRecaptchaLoad = function () {
+
+            captchaIsReady = true;
+
+            if (frame) {
+                renderCaptcha();
+            }
+        };
+
+        var apiUrl = "https://www.google.com/recaptcha/api.js?hl=sk" + "&onload=onRecaptchaLoad&render=explicit";
+        var apiScript = document.createElement('script');
+        apiScript.setAttribute('src', apiUrl);
+        document.head.appendChild(apiScript);
+
+        function renderCaptcha() {
+            var gr = frame.find(".g-recaptcha");
+            window.grecaptcha.render(gr[0],
+                {
+                    'sitekey': '6LeOuowUAAAAAAMwQ4lawxQkRVeHqszOhZTkbWDx'
+                });
+        }
+
+        function reCaptchaCallback(recaptchaResponse) {
+
+            $.ajax({
+                url: "https://kataster.skgeodesy.sk/Portal/api/Captcha/GetCookies",
+                type: "POST",
+                data: {
+                    "": recaptchaResponse
+                }
+            }).then(function () {
+                location.reload(true);
+            });
+        }
+
+        $(document).ready(function () {
+
+            frame = $('<div class="g-recaptcha-wrap"><div class="g-recaptcha" data-callback="reCaptchaCallback"></div></div>');
+            frame.appendTo("body");
+
+            if (captchaIsReady) {
+                renderCaptcha();
+            }
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>

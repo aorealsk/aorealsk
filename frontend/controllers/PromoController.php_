@@ -1,0 +1,612 @@
+<?php
+
+namespace frontend\controllers;
+
+use common\models\fbcharity\PromoPersonal;
+use common\models\promo\ComboItemTranslator;
+use common\models\promo\Promo;
+use common\models\promo\PromoGuest;
+use common\models\promo\PromoGuestOrder;
+use common\models\promo\PromoGuestOrderItem;
+use common\models\promo\PromoStockItem;
+use common\models\promo\StockItem;
+use common\models\promo\StockItemGroup;
+use common\models\sys\SysLog;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+use yii\web\Request;
+use yii\web\Response;
+
+class PromoController extends \yii\web\Controller
+{
+    private $slug = null;
+
+    public function beforeAction($action)
+    {
+        $this->slug = Yii::$app->request->get('slug');
+        return parent::beforeAction($action);
+    }
+
+    public function actions(): array
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionIndex()
+    {
+        $actionID = Yii::$app->request->get('action');
+        if (!empty($actionID)) {
+            return $this->createAction($actionID)->runWithParams([]);
+        }
+        return $this->render('index');
+    }
+
+    public function actionComboTemplate()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $id = (int)Yii::$app->request->post('iid');
+        $lang = Yii::$app->request->post('l');
+        $item = PromoStockItem::findOne(['id'=>$id]);
+        $transaltor = new ComboItemTranslator($item->combo_items, $lang);
+        $rows = $transaltor->getSelectItems();
+
+        $result['status'] = 'ok';
+        $result['items'] = $this->renderPartial('select_items',['items'=>$rows]);
+
+        return $result;
+    }
+
+    public function actionOrderHistory()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $key = Yii::$app->request->post('odk');
+
+        $guest = PromoGuest::findOne(['order_hash'=>$key]);
+        $orders = PromoGuestOrder::find()->andWhere(['=','promo_id',$guest->promo_id])
+            ->andWhere(['=','promo_guest_id',$guest->id])->all();
+
+        $result['status'] = 'ok';
+        $result['items'] = $this->renderPartial('history_rows',['rows' => $orders]);
+
+        return $result;
+    }
+
+    public function actionOrderStatusChange()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $orderText = [
+            'new' => 'Nová',
+            'processing' => 'Spracovaná',
+            'paid' => 'Zaplatená',
+        ];
+        $orderColor= [
+            'new' => 'text-bg-success',
+            'processing' => 'text-bg-warning',
+            'paid' => 'text-bg-danger',
+        ];
+        $orderId = Yii::$app->request->post('oid');
+        $stat = Yii::$app->request->post('stat');
+
+        $order = PromoGuestOrder::findOne(['id'=>$orderId]);
+        $result['old_class'] = $orderColor[$order->status];
+        if ($stat === PromoGuestOrder::PROCESSING) {
+            $order->locked_by = Yii::$app->user->getIdentity()->username;
+            $order->status = PromoGuestOrder::PROCESSING;
+        }
+        if ($stat === PromoGuestOrder::PAID) {
+            $order->status = PromoGuestOrder::PAID;
+            // odpocitajme objednavku zo skladu
+            $this->updatePromoStock($order);
+        }
+        $order->save();
+
+
+        $result['status'] = 'ok';
+        $result['status_text'] = $orderText[$order->status];
+        $result['status_color'] = $orderColor[$order->status];
+        $result['oid'] = $orderId;
+
+        return $result;
+    }
+
+    private function updatePromoStock(PromoGuestOrder $order)
+    {
+        $unitMap = [
+            '1dl' => 0.1,
+            '0,04dl' => 0.04,
+            '1l' => 1,
+            '0.75dl' => 0.75,
+            'size_1DL' => 0.1,
+            'size_1L' => 1,
+        ];
+        $items = $order->items;
+        //PromoGuestOrderItem
+        foreach ($items as $item) {
+            $details = $item->stockItemDetail;
+            if ($details->combo == 1) {
+                $map = json_decode($details->combo_items,true);
+                if (count($map) == 1) {
+                    $unit = $unitMap[$map['main']['type']];
+                    $stock = PromoStockItem::findOne(['stock_item_id'=>$item->combo_item]);
+                    $stock->amount -= $unit*$item->amount;
+                    $stock->save();
+                    unset($stock);
+                } else {
+                    //alkohol
+                    $unit = (StockItem::findOne(['id'=>$map['main']['item']]))->bottle_size;
+                    $stock = PromoStockItem::findOne(['stock_item_id'=>$map['main']['item']]);
+                    $stock->amount -= $unit*$item->amount;
+                    $stock->save();
+                    unset($stock,$unit);
+                    //red bull
+                    $it = StockItem::findOne(['group_id'=>$map['ext'][1]['item'][0]]);
+                    $stock = PromoStockItem::findOne(['stock_item_id'=>$it->id]);
+                    $stock->amount -= $it->bottle_size * $map['ext'][1]['amount'] * $item->amount;
+                    $stock->save();
+                    unset($stock,$it);
+                    $stock = PromoStockItem::findOne(['stock_item_id'=>$item->combo_item]);
+                    $stock->amount -= $unitMap[$map['ext'][0]['type']] * $item->amount;
+                    $stock->save();
+                    unset($stock,$unit);
+                }
+                unset($map);
+            } else {
+                if (!in_array($item->unit,['fľaša','üveg'])) {
+                    $unit = $unitMap[$item->unit];
+                    $details->amount -= $unit * $item->amount;
+                    $details->save();
+                } else {
+                    $unit = $details->itemDetails->bottle_size;
+                    $details->amount -= $unit * $item->amount;
+                    $details->save();
+                }
+            }
+            unset($unit);
+        }
+    }
+
+    public function actionStockStatus()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = PromoStockItem::find()->all();
+        $result['status'] = 'ok';
+        $result['table'] = $this->renderPartial('stocklist',['list'=>$list]);
+
+        return $result;
+    }
+
+    public function actionVipOrderList()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = PromoStockItem::find()->where('combo=0')->all();
+        $result['status'] = 'ok';
+        $result['table'] = $this->renderPartial('viplist',['list'=>$list]);
+
+        return $result;
+    }
+
+    public function actionLoadOrders()
+    {
+        $orders = PromoGuestOrder::find()
+            ->andWhere(['=','promo_id',Yii::$app->user->getIdentity()->promo_id])
+            ->andWhere(['not in','status',[PromoGuestOrder::CLOSED,PromoGuestOrder::DELETED,PromoGuestOrder::PAID]])
+            ->all();
+
+        return $this->renderPartial('order_list',['orders'=>$orders]);
+    }
+
+    public function actionLoadOrder()
+    {
+        $orderText = [
+            'new' => 'Nová',
+            'processing' => 'Spracovaná'
+        ];
+        $orderColor= [
+            'new' => 'text-bg-success',
+            'processing' => 'text-bg-warning'
+        ];
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $orderId = Yii::$app->request->post('oid');
+        $order = PromoGuestOrder::findOne(['id'=>$orderId]);
+        $result = ['status' => 'ok'];
+        $totalSum = 0;
+
+        $result['oid'] = $orderId;
+        $result['title'] = '#'.$orderId.' - '.$order->created_at;
+        $result['status_text'] = $orderText[$order->status];
+        $result['status_color'] = $orderColor[$order->status];
+        $result['locked'] = $order->locked_by;
+
+        $rows = PromoGuestOrderItem::find()
+            ->andWhere(['=','promo_guest_order_id',$orderId])
+            ->all();
+
+        $items = [];
+        foreach ($rows as $row) {
+            $title = $row->stockItemDetail->itemDetails->getTitle();
+            if (!empty($row->combo_item) && (int)($row->combo_item)>0) {
+                $item = StockItem::findOne($row->combo_item);
+                $description = trim($row->stockItemDetail->itemDetails->getDescription());
+                if ($description != '') {
+                    $title .= "<p style='margin:0;padding:0;font-size: 9pt'>{$description}</p>";
+                }
+                $title .= "<p style='margin:0;padding:0;font-size: 9pt'>(Voliteľná položka: ".$item->getTitle().")</p>";
+            }
+            $items[] = [
+                'title' => $title,
+                'mj' => $row->unit,
+                'mnozstvo' => $row->amount,
+                'jedcena' => $row->unit_price,
+                'cena' =>  $row->price,
+            ];
+
+            $totalSum += $row->price;
+        }
+
+        $result['items_tbody'] = $this->renderPartial('orders_tbody',['items'=>$items]);
+        $result['items_tfoot'] = $this->renderPartial('orders_tfoot',['totalSum'=>$totalSum]);
+
+
+        return $result;
+    }
+
+    public function actionOrders()
+    {
+        $this->layout = 'promo_order';
+
+        $orders = PromoGuestOrder::find()
+            ->andWhere(['=','promo_id',Yii::$app->user->getIdentity()->promo_id])
+            ->andWhere(['not in','status',[PromoGuestOrder::CLOSED,PromoGuestOrder::DELETED,PromoGuestOrder::PAID]])
+            ->all();
+
+        return $this->render('orders',[
+            'orders' => $orders,
+            'promoId' => Yii::$app->user->getIdentity()->promo_id,
+        ]);
+    }
+
+    public function actionLogin()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect(Url::to(['/promo/orders']));
+        }
+        if (Yii::$app->request->isPost) {
+            $data = Yii::$app->request->post('Login');
+            $personal = PromoPersonal::find()
+                ->andWhere(['=','user_name', $data['username']])
+                ->andWhere(['=','pin',$data['pin']])
+                ->one();
+            if ($personal) {
+                Yii::$app->user->login($personal, 3600 * 24 * 30);
+                return $this->redirect(Url::to(['/promo/orders']));
+            }
+        }
+        Yii::$app->session->setFlash('danger', 'Zadali ste zlé meno alebo zlý PIN.');
+        $this->layout = 'personal';
+        return $this->render('login');
+    }
+
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+        Yii::$app->session->set('success', 'Boli ste úspešne odhlásený!');
+        return $this->redirect(Url::to(['/promo/login']));
+    }
+
+    public function actionPersonalRegister()
+    {
+        $this->layout = false;
+        $pro = Yii::$app->request->get('pro');
+        return $this->render('personal-register', [
+            'pro' => $pro ?? 1,
+        ]);
+    }
+
+    public function actionFinishPersonal()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result = ['status' => 'ok'];
+
+        $tr = Yii::$app->db->beginTransaction();
+        try {
+            $data = Yii::$app->request->post();
+            $personal = new PromoPersonal();
+            $personal->promo_id = $data['promo_id'];
+            $personal->name_first = $data['name_first'];
+            $personal->name_last = $data['name_last'];
+            $personal->email = $data['email'];
+            $personal->phone = $data['phone'];
+            $personal->user_name = $data['user_name'];
+            $personal->pin = $data['pin'];
+            $personal->lang = implode(',', $data['lang']);
+            $personal->created_at = date('Y-m-d H:i:s');
+            $personal->save();
+            $tr->commit();
+        } catch (\Exception $e) {
+            $tr->rollBack();
+            $result['status'] = 'error';
+            $result['message'] = $e->getMessage();
+        }
+
+        return $result;
+    }
+
+    public function actionFinishVipOrder()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $orders = Yii::$app->request->post('o');
+        $promoId = Yii::$app->request->post('pid');
+        $price = 0;
+        $tr = Yii::$app->db->beginTransaction();
+        try {
+            $order = new PromoGuestOrder();
+            $order->promo_id = $promoId;
+            $order->promo_guest_id = 1;
+            $order->status = PromoGuestOrder::PAID;
+            $order->price = 0;
+            $order->locked_by = Yii::$app->user->getIdentity()->username;
+            $order->save();
+
+            $orders = explode('|', $orders);
+            foreach ($orders as $row) {
+                if (!empty($row)) {
+                    $it = explode('_',$row);
+                    $item = new PromoGuestOrderItem();
+                    $item->promo_guest_order_id = $order->id;
+                    $item->promo_stock_item_id = $it[0];
+                    $item->unit = 'fľaša';
+                    $item->unit_price = $it[2];
+                    $item->amount = $it[1];
+                    $item->price = $it[1] * $it[2];
+                    $item->save();
+                    unset($item);
+                    $price += $it[1] * $it[2];
+                }
+            }
+
+            $order->price = $price;
+            $order->save();
+            $this->updatePromoStock($order);
+
+            $tr->commit();
+        } catch(\Exception $e) {
+            $tr->rollBack();
+            SysLog::WriteError(null,self::class, $e->getMessage());
+            return ['status'=>'error','message'=>$e->getMessage()];
+        }
+        return ['status'=>'ok'];
+    }
+    public function actionFinishOrder()
+    {
+        $orders = Yii::$app->request->post('Order');
+        $key = Yii::$app->request->post('orderKey');
+        $lang = Yii::$app->request->post('l');
+        $price = 0;
+
+        $tr = Yii::$app->db->beginTransaction();
+        try{
+
+            $guest = PromoGuest::findOne(['order_hash'=>$key]);
+
+            if (!$guest) {
+                return $this->redirect(Url::to(["/promo/wrong-hash/{$lang}"]));
+            }
+
+            $order = new PromoGuestOrder();
+            $order->promo_id = $guest->promo_id;
+            $order->promo_guest_id = $guest->id;
+            $order->status = PromoGuestOrder::NEW;
+            $order->price = $price;
+            $order->save();
+
+            $orders = explode('|', $orders);
+
+            foreach ($orders as $row) {
+                if (!empty($row)) {
+                    $it = explode('_',$row);
+                    $item = new PromoGuestOrderItem();
+                    $item->promo_guest_order_id = $order->id;
+                    $item->promo_stock_item_id = $it[0];
+                    $item->unit = $it[1];
+                    $item->unit_price = $it[3];
+                    $item->amount = $it[2];
+                    $item->price = $it[3] * $it[2];
+                    $item->combo_item = !empty($it[4]) ? $it[4] : null;
+                    $item->save();
+                    unset($item);
+                    $price += $it[3] * $it[2];
+                }
+            }
+
+            $order->price = $price;
+            $order->save();
+
+            $tr->commit();
+            $url = Url::to(["/promo/order-done/{$lang}/{$key}"]);
+        } catch (\Exception $e) {
+            $tr->rollBack();
+            SysLog::WriteError(null,self::class, $e->getMessage());
+            $url = Url::to(["/promo/order-failed/{$lang}/{$key}"]);
+        }
+        return $this->redirect($url);
+    }
+
+    public function actionWrongHash()
+    {
+
+    }
+
+    public function actionOrderDone()
+    {
+        $lang = Yii::$app->request->get('l');
+        $key = Yii::$app->request->get('k');
+        $this->layout = 'promo_order';
+
+        return $this->render('order_done',[
+            'lang' => $lang,
+            'key' => $key,
+        ]);
+    }
+
+    public function actionOrderFailed()
+    {
+        $lang = Yii::$app->request->get('l');
+        $key = Yii::$app->request->get('k');
+        $this->layout = 'promo_order';
+
+        return $this->render('order_failed',[
+            'lang' => $lang,
+            'key' => $key,
+        ]);
+    }
+
+    public function actionOrder()
+    {
+        $data = Yii::$app->request->get();
+        $guest = PromoGuest::findOne(['order_hash'=>$data['k']]);
+        $this->layout = 'promo_order';
+
+        $groups = StockItemGroup::find()->where(['is','deleted_at',null])->all();
+        $priceList = [];
+        foreach ($groups as $group) {
+            $items = ArrayHelper::getColumn(
+                Yii::$app->db->createCommand("select id from stock_item where group_id={$group->id}")->queryAll(), 'id');
+
+            $stockItems = PromoStockItem::find()
+                ->where('stock_item_id in (' . implode(',',$items).') AND (amount>0 OR combo=1)')
+                ->all();
+
+            if (count($stockItems)>0) {
+                $priceList[$group->id] = $stockItems;
+            }
+        }
+        return $this->render('order',[
+            'guest' => $guest,
+            'lang' => $data['l'],
+            'groups' => $groups,
+            'pricelist' => $priceList,
+        ]);
+    }
+
+    public function actionActivate()
+    {
+        $data = Yii::$app->request->get();
+        $guest = PromoGuest::findOne(['validation_hash' => $data['k']]);
+        $tr = Yii::$app->db->beginTransaction();
+        try {
+            if (!$guest) {
+                throw new Exception('Wrong identification key');
+            }
+            $guest->validated();
+            $hash = $guest->generateOrderHash();
+            $tr->commit();
+            $subject = $data['l'] == 'hu' ? 'Hozzáférés az itallaphoz' : 'Prístup k nápojovému lístku';
+
+            Yii::$app
+                ->promomailer
+                ->compose(['html' => 'accessToOrderPage_'.$data['l'].'-html'],[
+                    'firstName' => $guest->name_first,
+                    'orderKey' => $hash,
+                ])
+                ->setFrom('promo@aoreal.sk')
+                ->setTo($guest->email)
+                ->setSubject($subject)
+                ->send();
+            $url = Url::to("/promo/validation-done/{$data['l']}");
+        } catch (\Exception $ex) {
+            $tr->rollBack();
+            $url = Url::to("/promo/validation-failed/{$data['l']}");
+        } finally {
+            $this->redirect($url);
+        }
+    }
+
+    public function actionFinishRegister()
+    {
+        $data = Yii::$app->request->post('Register');
+        $lang = $data['valid_lang'];
+        $promo = Promo::findOne(['slug'=>$data['slug']]);
+
+        $tr = Yii::$app->db->beginTransaction();
+        try {
+            $guest = new PromoGuest();
+            $guest->promo_id = $promo->id;
+            $guest->ticket_num = $data[$lang]['ticket_num'];
+            $guest->name_first = $data[$lang]['name_first'];
+            $guest->name_last = $data[$lang]['name_last'];
+            $guest->email = $data[$lang]['email'];
+            $guest->phone = $data[$lang]['phone'] != "" ?: null;
+            $guest->lang = $lang;
+            $guest->birth_date = $data[$lang]['birth_date'] != "" ?: null;
+            $guest->validated = 0;
+            $guest->save();
+            $tr->commit();
+
+            $hash = $guest->generateValidationHash();
+
+            $subject = $lang == 'hu' ? 'Regisztráció' : 'Registrácia';
+
+            Yii::$app
+                ->promomailer
+                ->compose(['html' => 'finishPromoRegister_'.$lang.'-html'],[
+                    'firstName' => $data[$lang]['name_first'],
+                    'activationKey' => $hash,
+                ])
+                ->setFrom('promo@aoreal.sk')
+                ->setTo($data[$lang]['email'])
+                ->setSubject($subject)
+                ->send();
+
+            $this->redirect(Url::to("/promo/register-done/{$lang}"));
+
+        } catch (\Exception $e) {
+            $tr->rollBack();
+            SysLog::WriteError(NULL,'Promo',$e->getMessage());
+            SysLog::WriteError(NULL,'Promo',$e->getTraceAsString());
+            $this->redirect(Url::to("/promo/register-failed/{$lang}"));
+        }
+    }
+
+    public function actionRegisterDone(): string
+    {
+        $lang = Yii::$app->request->get('l');
+        return $this->render('register-done',[
+            'lang' => $lang,
+        ]);
+    }
+
+    public function actionRegisterFailed(): string
+    {
+        $lang = Yii::$app->request->get('l');
+        return $this->render('register-failed',[
+            'lang' => $lang,
+        ]);
+    }
+
+    public function actionValidationDone(): string
+    {
+        $lang = Yii::$app->request->get('l');
+        return $this->render('validation-done',[
+            'lang' => $lang,
+        ]);
+    }
+
+    public function actionValidationFailed(): string
+    {
+        $lang = Yii::$app->request->get('l');
+        return $this->render('validation-failed',[
+            'lang' => $lang,
+        ]);
+    }
+
+}

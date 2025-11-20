@@ -1,0 +1,37 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+    RewriteBase /
+
+    # 1) HTTPS kényszerítése
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # 2) Maintenance csak a rootra (/ vagy /index.php)
+    #    Ne írja át, ha már a maintenance.html-t kérik
+    RewriteCond %{REQUEST_URI} !^/maintenance\.html$
+    RewriteRule ^(index\.php)?$ /maintenance.html [R=302,L]
+
+    # 3) Media könyvtár
+    RewriteRule ^media/(.*)$ media/$1 [L,NC,QSA]
+
+    # 4) Backoffice assetek és front controller
+    RewriteRule ^backoffice/assets/(.*)$   backend/web/assets/$1   [L,NC,QSA]
+    RewriteRule ^backoffice/docstore/(.*)$ backend/docstore/$1     [L,NC,QSA]
+    RewriteRule ^backoffice/css/(.*)$      backend/web/css/$1      [L,NC,QSA]
+    RewriteRule ^backoffice/js/(.*)$       backend/web/js/$1       [L,NC,QSA]
+    RewriteCond %{REQUEST_URI} ^/backoffice
+    RewriteCond %{REQUEST_URI} !^/backend/web/(assets|js|css)/
+    RewriteRule ^backoffice/.*$ backend/web/index.php [L,NC,QSA]
+
+    # 5) Frontend statikus assetek
+    RewriteRule ^(assets|css|js|images|bootstrap|vendor|content|captcha)/(.*)$ frontend/web/$1/$2 [L,NC,QSA]
+    RewriteRule ^docs/(.*)$ docs/$1 [L,NC,QSA]
+
+    # 6) Végső catch‑all a frontend alkalmazáshoz
+    RewriteCond %{REQUEST_URI} !^/(frontend|backend)/web/(assets|css|js|bootstrap|vendor)/
+    RewriteCond %{REQUEST_URI} !index\.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . frontend/web/index.php [L,QSA]
+</IfModule>

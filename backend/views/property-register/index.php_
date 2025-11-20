@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * @var $data array
+ */
+
+use backend\assets\RealAsset;
+
+$this->title = 'Register';
+$this->registerJSFile('@web/assets/node_modules/datatables/datatables.min.js', ['depends' => RealAsset::class]);
+$this->registerCSSFile(
+    '@web/assets/node_modules/datatables/media/css/dataTables.bootstrap4.css',
+    ['depends' => RealAsset::class]
+);
+$this->registerJSFile(
+    '@web/assets/node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js',
+    ['depends' => RealAsset::class]
+);
+$this->registerCSSFile(
+    '@web/assets/node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css',
+    ['depends' => RealAsset::class]
+);
+?>
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-12 align-self-center">
+                <h4 class="text-themecolor"><?= $this->title ?></h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="table-responsive m-t-20">
+                            <table class="table table-bordered table-striped table-sm dattable">
+                                <thead>
+                                <tr>
+                                    <th>Majiteľ</th>
+                                    <th>Adresa</th>
+                                    <th>Email</th>
+                                    <th>Telefón</th>
+                                    <th title="Číslo okresu">Č.ok.</th>
+                                    <th title="Okres">Okr.</th>
+                                    <th title="Číslo obce">Č. ob.</th>
+                                    <th title="Obec">Ob.</th>
+                                    <th title="List vlastníctva">LV</th>
+                                    <th>Typ</th>
+                                    <th title="Podiel">Pod.</th>
+                                    <th title="Titul nadobudnutia">Tit. nad.</th>
+                                    <th title="Ťarchy">Ťar.</th>
+                                    <th title="Súpisné číslo">Sup. č.</th>
+                                    <th title="Číslo parcely">Č.par.</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($data as $row) : ?>
+                                    <tr>
+                                        <td><?= $row['owner_name'] ?></td>
+                                        <td><?= $row['addr'] ?></td>
+                                        <td><?= $row['email'] ?? '' ?></td>
+                                        <td><?= $row['phone'] ?? '' ?></td>
+                                        <td><?= $row['district_id'] ?? '' ?></td>
+                                        <td><?= $row['district_name'] ?></td>
+                                        <td><?= $row['municipality_id'] ?? '' ?></td>
+                                        <td><?= $row['municipality_name'] ?></td>
+                                        <td><?= $row['list_id'] ?></td>
+                                        <td></td>
+                                        <td><?= $row['ownership'] ?></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<?php
+
+$js = <<<JS
+    $(function() {
+        $('.dattable').DataTable({
+            order: [],
+            responsive: true,
+            "bFilter": false
+        });
+    });
+      
+JS;
+$this->registerJS($js);

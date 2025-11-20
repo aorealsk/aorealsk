@@ -1,0 +1,23 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+    RewriteBase /
+
+    # —————————————————————————————
+    # 1) Teszt: ha mûködik, ide jön 500-as
+    # —————————————————————————————
+    RewriteRule ^this-will-cause-error$ – [L]
+
+    # —————————————————————————————
+    # 2) Maintenance csak a rootra (/ vagy /index.php)
+    # —————————————————————————————
+    RewriteCond %{REQUEST_URI} !^/maintenance\.html$
+    RewriteRule ^(index\.php)?$ /maintenance.html [R=302,L]
+
+    # —————————————————————————————
+    # 3) HTTPS kényszerítés
+    # —————————————————————————————
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+

@@ -1,0 +1,62 @@
+timestamp,user_id,score,total,ip,user_agent,details_json
+1758844905,1,1,1,88.212.18.88,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B""}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1758844912,1,1,1,88.212.18.88,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B""}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1758845512,1,1,1,88.212.18.88,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B""}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1758845959,1,5,5,88.212.18.88,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B""},{""q"":2,""given"":""B"",""correct"":""B""},{""q"":3,""given"":""C"",""correct"":""C""},{""q"":4,""given"":""C"",""correct"":""C""},{""q"":5,""given"":""B"",""correct"":""B""}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1758846305,1,5,5,88.212.18.88,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":2,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":3,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":4,""given"":""B"",""correct"":""B"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":5,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1758847171,1,5,5,88.212.18.88,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":2,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":3,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":4,""given"":""B"",""correct"":""B"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":5,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1758862920,1,1,5,178.40.236.246,"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36","[{""q"":1,""given"":""A"",""correct"":""B"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":false,""ok_img"":true},{""q"":2,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":3,""given"":""A"",""correct"":""A"",""img_given"":null,""img_correct"":""A"",""ok_text"":true,""ok_img"":false},{""q"":4,""given"":""B"",""correct"":""B"",""img_given"":null,""img_correct"":""A"",""ok_text"":true,""ok_img"":false},{""q"":5,""given"":""A"",""correct"":""A"",""img_given"":null,""img_correct"":""A"",""ok_text"":true,""ok_img"":false}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1758862960,1,1,5,178.40.236.246,"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36","[{""q"":1,""given"":""A"",""correct"":""B"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":false,""ok_img"":true},{""q"":2,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":3,""given"":""A"",""correct"":""A"",""img_given"":null,""img_correct"":""A"",""ok_text"":true,""ok_img"":false},{""q"":4,""given"":""B"",""correct"":""B"",""img_given"":null,""img_correct"":""A"",""ok_text"":true,""ok_img"":false},{""q"":5,""given"":""A"",""correct"":""A"",""img_given"":null,""img_correct"":""A"",""ok_text"":true,""ok_img"":false}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1760095205,1,1,5,46.34.224.149,"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36","[{""q"":1,""given"":""A"",""correct"":""B"",""img_given"":""B"",""img_correct"":""A"",""ok_text"":false,""ok_img"":false},{""q"":2,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":3,""given"":""C"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":false,""ok_img"":true},{""q"":4,""given"":""C"",""correct"":""B"",""img_given"":""B"",""img_correct"":""A"",""ok_text"":false,""ok_img"":false},{""q"":5,""given"":""B"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":false,""ok_img"":true}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1761778807,114,5,5,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B"",""img_given"":""B"",""img_correct"":""B"",""ok_text"":true,""ok_img"":true},{""q"":2,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":3,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":4,""given"":""B"",""correct"":""B"",""img_given"":""B"",""img_correct"":""B"",""ok_text"":true,""ok_img"":true},{""q"":5,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1761778835,114,4,5,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B"",""img_given"":""A"",""img_correct"":""B"",""ok_text"":true,""ok_img"":false},{""q"":2,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":3,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":4,""given"":""B"",""correct"":""B"",""img_given"":""B"",""img_correct"":""B"",""ok_text"":true,""ok_img"":true},{""q"":5,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1761779231,1,5,5,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B"",""img_given"":""B"",""img_correct"":""B"",""ok_text"":true,""ok_img"":true},{""q"":2,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":3,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":4,""given"":""B"",""correct"":""B"",""img_given"":""B"",""img_correct"":""B"",""ok_text"":true,""ok_img"":true},{""q"":5,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true}]"
+timestamp,user_id,score,total,ip,user_agent,details_json
+1761779379,114,5,5,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","[{""q"":1,""given"":""B"",""correct"":""B"",""img_given"":""B"",""img_correct"":""B"",""ok_text"":true,""ok_img"":true},{""q"":2,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":3,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true},{""q"":4,""given"":""B"",""correct"":""B"",""img_given"":""B"",""img_correct"":""B"",""ok_text"":true,""ok_img"":true},{""q"":5,""given"":""A"",""correct"":""A"",""img_given"":""A"",""img_correct"":""A"",""ok_text"":true,""ok_img"":true}]"
+timestamp,user_id,score,total,ip,agent
+1761779902,114,5,5,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,score,total,ip,agent
+1761782228,114,5,5,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,score,total,ip,agent
+1761783377,114,5,5,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,score,total,ip,agent
+1761783863,114,5,5,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,ip,agent
+1761784044,124,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,ip,agent
+1761784126,124,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,ip,agent
+1761784561,114,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,ip,agent
+1761784858,117,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,ip,agent
+1761838369,1,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,ip,agent
+1761838453,1,95.102.114.193,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+timestamp,user_id,ip,agent
+1762376429,137,178.253.159.208,"Mozilla/5.0 (iPhone; CPU iPhone OS 18_5_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/140.0.7339.101 Mobile/15E148 Safari/604.1"
+timestamp,user_id,ip,agent
+1762377858,122,193.87.80.92,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+timestamp,user_id,ip,agent
+1762503026,116,85.135.232.185,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+timestamp,user_id,ip,agent
+1762758167,131,188.167.159.166,"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36"
+timestamp,user_id,ip,agent
+1762758247,130,46.34.239.149,"Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.1 Mobile/15E148 Safari/604.1"
+timestamp,user_id,ip,agent
+1762759078,105,188.167.159.166,"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36"
+timestamp,user_id,ip,agent
+1762931347,130,46.34.232.187,"Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.1 Mobile/15E148 Safari/604.1"
+timestamp,user_id,ip,agent
+1762951921,130,46.34.233.70,"Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.1 Mobile/15E148 Safari/604.1"
