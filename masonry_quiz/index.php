@@ -1,4 +1,53 @@
 <?php
+session_start();
+
+$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && stripos($contentType, 'application/json') !== false) {
+    $rawInput = file_get_contents('php://input');
+    $payload = json_decode($rawInput, true);
+
+    $response = ['success' => false];
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        $response['message'] = 'Invalid JSON payload.';
+    } elseif (($payload['action'] ?? '') !== 'save_inputs' || !isset($payload['inputs']) || !is_array($payload['inputs'])) {
+        $response['message'] = 'Invalid request.';
+    } else {
+        $storageDir = dirname(__DIR__) . '/data/user_input_states';
+
+        if (!is_dir($storageDir) && !mkdir($storageDir, 0777, true) && !is_dir($storageDir)) {
+            $response['message'] = 'Unable to prepare storage.';
+        } else {
+            $storageFile = $storageDir . '/' . session_id() . '.json';
+
+            $dataToStore = [
+                'session_id' => session_id(),
+                'saved_at' => gmdate('c'),
+                'page' => isset($payload['page']) ? (int) $payload['page'] : null,
+                'inputs' => $payload['inputs'],
+            ];
+
+            $bytes = @file_put_contents(
+                $storageFile,
+                json_encode($dataToStore, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+                LOCK_EX
+            );
+
+            if ($bytes === false) {
+                $response['message'] = 'Failed to write to storage.';
+            } else {
+                $response['success'] = true;
+                $response['file'] = basename($storageFile);
+            }
+        }
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
+}
+
 $tools = [
     1 => ['img' => 'eDiqymQZGc.png', 'name' => 'skladací meter'],
     2 => ['img' => 'h1hCqmeAlk.png', 'name' => 'vodováha'],
@@ -13,9 +62,216 @@ $tools = [
     11 => ['img' => 'vu0DSKuuer.png', 'name' => 'brúska'],
     12 => ['img' => 'YiqGo8uDM1.png', 'name' => 'gumené kladivo']
 ];
+
+$chimneys = [
+    1 => ['img' => 'chimney1.jpg', 'name' => 'jednoprieduchový komín'],
+    2 => ['img' => 'chimney2.jpg', 'name' => 'dvojprieduchový komín'],
+    3 => ['img' => 'chimney3.jpg', 'name' => 'komínový sopúch'],
+    4 => ['img' => 'chimney4.jpg', 'name' => 'komínový nadstavec']
+];
+
+$currentPage = 1;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['current_page'])) {
+    $currentPage = max(1, (int) $_POST['current_page']);
+}
+
+$toolResults = [];
+$toolScore = 0;
+$toolMessage = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['quiz_type'] ?? '') === 'tools') {
+    $postedAnswers = $_POST['answers'] ?? [];
+
+    foreach ($tools as $id => $tool) {
+        $selected = isset($postedAnswers[$id]) ? trim($postedAnswers[$id]) : '';
+        $correct = $tool['name'];
+        $isCorrect = ($selected !== '' && $selected === $correct);
+        if ($isCorrect) {
+            $toolScore++;
+        }
+
+        $toolResults[$id] = [
+            'selected' => $selected,
+            'correct' => $correct,
+            'isCorrect' => $isCorrect,
+        ];
+    }
+
+    $toolMessage = $toolScore . ' správnych odpovedí z ' . count($tools) . '.';
+}
+
+$toolOptions = array_column($tools, 'name');
+shuffle($toolOptions);
+
+$chimneyResults = [];
+$chimneyScore = 0;
+$chimneyMessage = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['quiz_type'] ?? '') === 'chimneys') {
+    $postedAnswers = $_POST['answers'] ?? [];
+
+    foreach ($chimneys as $id => $chimney) {
+        $selected = isset($postedAnswers[$id]) ? trim($postedAnswers[$id]) : '';
+        $correct = $chimney['name'];
+        $isCorrect = ($selected !== '' && $selected === $correct);
+        if ($isCorrect) {
+            $chimneyScore++;
+        }
+
+        $chimneyResults[$id] = [
+            'selected' => $selected,
+            'correct' => $correct,
+            'isCorrect' => $isCorrect,
+        ];
+    }
+
+    $chimneyMessage = $chimneyScore . ' správnych odpovedí z ' . count($chimneys) . '.';
+}
+
+$chimneyOptions = array_column($chimneys, 'name');
+shuffle($chimneyOptions);
 ?>
 <!DOCTYPE html>
 <html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz o murovaní</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .page {
+            display: none;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            max-width: 960px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-nav {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .page-nav button {
+            padding: 10px 16px;
+            border: none;
+            background: #1976d2;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .page-nav button:disabled {
+            background: #9e9e9e;
+            cursor: default;
+        }
+
+        .page-indicator {
+            margin-left: auto;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .question {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #fff;
+        }
+
+        .tool-image,
+        .chimney-image {
+            width: 100%;
+            height: auto;
+            max-width: 220px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        select {
+            width: 100%;
+            max-width: 260px;
+            padding: 6px;
+        }
+
+        .message {
+            font-size: 1.2em;
+            color: #4CAF50;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            margin-top: 8px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            width: 100%;
+            max-width: 260px;
+            box-sizing: border-box;
+        }
+
+        .feedback.correct {
+            background: #e6ffed;
+            color: #116927;
+            border: 1px solid #9fe6b6;
+        }
+
+        .feedback.wrong {
+            background: #fff0f0;
+            color: #8a1f1f;
+            border: 1px solid #f2b3b3;
+        }
+
+        @media (max-width: 700px) {
+            .quiz-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 701px) and (max-width: 1000px) {
+            .quiz-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
 <!-----------------------    PAGE 1   ----------------------->
 <h1>1.1 BOZP a organizácia práce pri murovaní </h1>
 <h3>Teoretické východiská:</h3>
@@ -47,162 +303,48 @@ $tools = [
 <h1>1.2 Náradie, nástroje a pomôcky pri murovaní</h1>
 <h3>Teoretické východiská:</h3>
 1.	Do obrázkov pridajte názov murárskeho náradia:<br>
-<?php
-session_start();
-$score = 0;
-$message = '';
-$results = [];
+<div class="quiz-container">
+    <h1>Priraď obrázky k nástrojom</h1>
+    <?php if ($toolMessage): ?>
+        <div class="message"><?php echo htmlspecialchars($toolMessage, ENT_QUOTES, 'UTF-8'); ?></div>
+    <?php endif; ?>
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $posted = $_POST['answers'] ?? [];
+    <form method="post">
+        <input type="hidden" name="quiz_type" value="tools">
+        <input type="hidden" name="current_page" value="2">
+        <div class="quiz-grid">
+        <?php foreach ($tools as $id => $tool):
+            $toolSelectedValue = $toolResults[$id]['selected'] ?? ((($_POST['quiz_type'] ?? '') === 'tools') ? ($_POST['answers'][$id] ?? '') : '');
+        ?>
+            <div class="question">
+                <img src="images/<?php echo htmlspecialchars($tool['img'], ENT_QUOTES, 'UTF-8'); ?>" alt="Nástroj <?php echo $id; ?>" class="tool-image">
+                <select name="answers[<?php echo $id; ?>]">
+                    <option value=""> . . . </option>
+                    <?php foreach ($toolOptions as $option): ?>
+                    <option value="<?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>"
+                        <?php if ($toolSelectedValue !== '' && $toolSelectedValue === $option) echo 'selected'; ?>>
+                        <?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
 
-    foreach ($tools as $id => $tool) {
-        $selected = isset($posted[$id]) ? trim($posted[$id]) : '';
-        $correct = $tool['name'];
-        $isCorrect = ($selected !== '' && $selected === $correct);
-        if ($isCorrect) {
-            $score++;
-        }
-        $results[$id] = [
-            'selected' => $selected,
-            'correct' => $correct,
-            'isCorrect' => $isCorrect
-        ];
-    }
-
-    $message = "$score správnych odpovedí z " . count($tools) . ".";
-}
-
-
-$options = array_column($tools, 'name');
-shuffle($options);
-?>
-
-<!DOCTYPE html>
-<html lang="sk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kvíz o nástrojoch</title>
-    <style>
-        .quiz-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /*3 columns x 4 rows */
-        .quiz-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .question {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #fff;
-        }
-
-        .tool-image {
-            width: 100%;
-            height: auto;
-            max-width: 220px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-
-        select {
-            width: 100%;
-            max-width: 260px;
-            padding: 6px;
-        }
-
-        .message {
-            font-size: 1.2em;
-            color: #4CAF50;
-            margin: 20px 0;
-        }
-
-        .feedback {
-            margin-top: 8px;
-            padding: 6px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            width: 100%;
-            max-width: 260px;
-            box-sizing: border-box;
-        }
-        .feedback.correct {
-            background: #e6ffed;
-            color: #116927;
-            border: 1px solid #9fe6b6;
-        }
-        .feedback.wrong {
-            background: #fff0f0;
-            color: #8a1f1f;
-            border: 1px solid #f2b3b3;
-        }
-
-        @media (max-width: 700px) {
-            .quiz-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (min-width: 701px) and (max-width: 1000px) {
-            .quiz-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="quiz-container">
-        <h1>Priraď obrázky k nástrojom</h1>
-        <?php if ($message): ?>
-            <div class="message"><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></div>
-        <?php endif; ?>
-        
-        <form method="post">
-            <div class="quiz-grid">
-            <?php foreach ($tools as $id => $tool): 
-                $selectedValue = $results[$id]['selected'] ?? ($_POST['answers'][$id] ?? '');
-            ?>
-                <div class="question">
-                    <img src="images/<?php echo htmlspecialchars($tool['img'], ENT_QUOTES, 'UTF-8'); ?>" alt="Tool <?php echo $id; ?>" class="tool-image">
-                    <select name="answers[<?php echo $id; ?>]">
-                        <option value=""> . . . </option>
-                        <?php foreach ($options as $option): ?>
-                        <option value="<?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>"
-                            <?php if ($selectedValue !== '' && $selectedValue === $option) echo 'selected'; ?>>
-                            <?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>
-                        </option>
-                        <?php endforeach; ?>
-                    </select>
-
-                    <?php if (!empty($results)): 
-                        $r = $results[$id];
-                        if ($r['isCorrect']): ?>
-                            <div class="feedback correct">Správne</div>
-                        <?php else: ?>
-                            <div class="feedback wrong">Správna odpoveď: <?php echo htmlspecialchars($r['correct'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        <?php endif;
-                    endif; ?>
-                </div>
-            <?php endforeach; ?>
+                <?php if (!empty($toolResults)):
+                    $toolResult = $toolResults[$id];
+                    if ($toolResult['isCorrect']): ?>
+                        <div class="feedback correct">Správne</div>
+                    <?php else: ?>
+                        <div class="feedback wrong">Správna odpoveď: <?php echo htmlspecialchars($toolResult['correct'], ENT_QUOTES, 'UTF-8'); ?></div>
+                    <?php endif;
+                endif; ?>
             </div>
-            
-            <div style="margin-top:20px;">
-                <button type="submit">skontroluj odpovede</button>
-            </div>
-        </form>
-    </div>
-</body>
+        <?php endforeach; ?>
+        </div>
+
+        <div style="margin-top:20px;">
+            <button type="submit">Skontroluj odpovede</button>
+        </div>
+    </form>
+</div>
 2. Uveďte, na čo slúži murárska lyžica<br>
 <textarea id="describeTrowelUse" name="describeTrowelUse" rows="5" cols="33"></textarea><br>
 3. Uveďte, na čo slúži murárska naberačka<br>
@@ -222,8 +364,6 @@ shuffle($options);
 <input type="radio" id="recognizeTools_No" name="recognizeTools" value="Nie">Nie<br>
 2.	Aké chyby v pracovnej činnosti som urobil počas vyučovacieho dňa?<br>
 <textarea id="mistakesDuringSchoolDay_Tools" name="mistakesDuringSchoolDay_Tools" rows="5" cols="33"></textarea><br>
-
-</html>
 
 <!-----------------------    PAGE 3   ----------------------->
 
@@ -301,9 +441,9 @@ V = <input type="text" id="brick_side_V" name="brick_side_V"> mm - výška tehly
 1.	Na obrázku je väzba ukončenia muriva hrubého 450 mm trojštvrťkami.<br>
 <img src="images/450mmhrubyspojkoncamurivas3.jpg"><br>
 Označte správnu odpoveď:<br>
-<input type="radio" id="450mmWallEndJoint_Correct" name="450mmWallEndJoint" value="Správne">v 1.vrstve sú trojštvrťky kladené ako behúne a v 2.vrstve ako väzáky<br>
-<input type="radio" id="450mmWallEndJoint_Incorrect" name="450mmWallEndJoint" value="Nesprávne">v 1.vrstve sú trojštvrťky kladené ako väzáky a v 2.vrstve ako behúne<br>
-<input type="radio" id="450mmWallEndJoint_Incorrect" name="450mmWallEndJoint" value="Nesprávne">v 1. aj v 2.vrstve su kladené ako behúne<br>
+<input type="radio" id="450mmWallEndJoint_Wrong" name="450mmWallEndJoint" value="Wrong">v 1.vrstve sú trojštvrťky kladené ako behúne a v 2.vrstve ako väzáky<br>
+<input type="radio" id="450mmWallEndJoint_Correct" name="450mmWallEndJoint" value="Correct">v 1.vrstve sú trojštvrťky kladené ako väzáky a v 2.vrstve ako behúne<br>
+<input type="radio" id="450mmWallEndJoint_Wrong2" name="450mmWallEndJoint" value="Wrong">v 1. aj v 2.vrstve su kladené ako behúne<br>
 2.	Aké sú zásady preväzovania pri ukončovaní múrov trojštvrťkami<br>
 <textarea id="basicPrinciplesStringing" name="basicPrinciplesStringing" rows="5" cols="33"></textarea><br>
 3.	Nakreslite ukončenie muriva hr. 600 mm trojštvrťkami - 1.vrstvu<br>
@@ -329,9 +469,9 @@ Označte správnu odpoveď:<br>
 1. Na obrázku je väzba ukončenia muriva hrubého 600 mm dlhými polovičkami<br>
 <img src="images/murivo1.jpg"><br>
 Označte správnu odpoveď:<br>
-<input type="radio" id="600mmWallEndWithLongHalves_Correct" name="600mmWallEndWithLongHalves" value="Správne">v 1. vrstve sú dlhé polovičky kladené ako behúne a v 2.vrstve ako väzáky <br>
-<input type="radio" id="600mmWallEndWithLongHalves_Incorrect" name="600mmWallEndWithLongHalves" value="Nesprávne">v 1. vrstve sú dlhé polovičky kladené ako väzáky a v 2.vrstve ako behúne<br>
-<input type="radio" id="600mmWallEndWithLongHalves_Incorrect" name="600mmWallEndWithLongHalves" value="Nesprávne">v 1. aj v 2. vrstve sú kladené ako behúne<br>
+<input type="radio" id="600mmWallEndWithLongHalves_Correct" name="600mmWallEndWithLongHalves" value="Correct">v 1. vrstve sú dlhé polovičky kladené ako behúne a v 2.vrstve ako väzáky <br>
+<input type="radio" id="600mmWallEndWithLongHalves_Wrong" name="600mmWallEndWithLongHalves" value="Wrong">v 1. vrstve sú dlhé polovičky kladené ako väzáky a v 2.vrstve ako behúne<br>
+<input type="radio" id="600mmWallEndWithLongHalves_Wrong2" name="600mmWallEndWithLongHalves" value="Wrong">v 1. aj v 2. vrstve sú kladené ako behúne<br>
 1.	Aké sú zásady preväzovania pri ukončovaní múrov dlhými polovičkam<br>
 <textarea id="basicPrinciplesStringing_LongHalves" name="basicPrinciplesStringing_LongHalves" rows="5" cols="33"></textarea><br>
 2.	Nakreslite ukončenie muriva hr. 300 mm dlhými polovičkami - 1.vrstvu<br>
@@ -357,9 +497,9 @@ Označte správnu odpoveď:<br>
 1.	Na obrázku je väzba pravouhlého pripojenia trojštvrťkami.<br>
 <img src="images/praverohovespojenie1.jpg"><br>
 Označte správnu odpoveď:<br>
-<input type="radio" id="RightAngleJointWithTriples_Correct" name="RightAngleJointWithTriples" value="Správne">v 1. vrstve sú trojštvrťky kladené ako behúne a v 2.vrstve ako väzáky<br>
-<input type="radio" id="RightAngleJointWithTriples_Incorrect" name="RightAngleJointWithTriples" value="Nesprávne">v 1. vrstve sú trojštvrťky kladené ako väzáky a v 2.vrstve ako behúne<br>
-<input type="radio" id="RightAngleJointWithTriples_Incorrect" name="RightAngleJointWithTriples" value="Nesprávne">v 1. aj v 2. vrstve sú kladené ako behúne<br>
+<input type="radio" id="RightAngleJointWithTriples_Correct" name="RightAngleJointWithTriples" value="Correct">v 1. vrstve sú trojštvrťky kladené ako behúne a v 2.vrstve ako väzáky<br>
+<input type="radio" id="RightAngleJointWithTriples_Wrong" name="RightAngleJointWithTriples" value="Wrong">v 1. vrstve sú trojštvrťky kladené ako väzáky a v 2.vrstve ako behúne<br>
+<input type="radio" id="RightAngleJointWithTriples_Wrong2" name="RightAngleJointWithTriples" value="Wrong">v 1. aj v 2. vrstve sú kladené ako behúne<br>
 2.	Vyznačte na obrázku priebežný múr a pripojený múr v 1. aj v 2. vrstve<br>
 <h3>Postup nadobúdania zručnosti:</h3>
 1.	Na cvičných tehlách predveďte 1. a 2. vrstve väzby pravouhlého pripojenia rohov trojštvrťkami<br>
@@ -379,9 +519,9 @@ Označte správnu odpoveď:<br>
 1.	Na obrázku je väzba pravouhlého pripojenia múrov trojštvrťkami.<br>
 <img src="images/pravouhlespojenie1.jpg"><br>
 Označte správnu odpoveď:<br>
-<input type="radio" id="RectangularWallJointWithTriples_Correct" name="RectangularWallJointWithTriples" value="Správne">v 1. vrstve sú trojštvrťky kladené ako behúne a v 2.vrstve trojštvrťky nie sú.<br>
-<input type="radio" id="RectangularWallJointWithTriples_Incorrect" name="RectangularWallJointWithTriples" value="Nesprávne">v 1. vrstve sú trojštvrťky kladené ako väzáky a v 2.vrstve trojštvrťky nie sú.<br>
-<input type="radio" id="RectangularWallJointWithTriples_Incorrect" name="RectangularWallJointWithTriples" value="Nesprávne">v 1. aj v 2. vrstve sú kladené ako väzáky.<br>
+<input type="radio" id="RectangularWallJointWithTriples_Correct" name="RectangularWallJointWithTriples" value="Correct">v 1. vrstve sú trojštvrťky kladené ako behúne a v 2.vrstve trojštvrťky nie sú.<br>
+<input type="radio" id="RectangularWallJointWithTriples_Wrong" name="RectangularWallJointWithTriples" value="Wrong">v 1. vrstve sú trojštvrťky kladené ako väzáky a v 2.vrstve trojštvrťky nie sú.<br>
+<input type="radio" id="RectangularWallJointWithTriples_Wrong2" name="RectangularWallJointWithTriples" value="Wrong">v 1. aj v 2. vrstve sú kladené ako väzáky.<br>
 2.	Aké sú zásady preväzovania pri pravouhlom pripojení múrov trojštvrťkami<br>
 <textarea id="basicPrinciplesStringing_RectangularWallJoints" name="basicPrinciplesStringing_RectangularWallJoints" rows="5" cols="33"></textarea><br>
 3.	Vyznačte na obrázku priebežný múr a pripojený múr v 1. aj v 2.vrstve<br>
@@ -560,100 +700,60 @@ Popíšte, aký komínový prieduch je na obrázku<br>
 
 <!-----------------------    PAGE 14   ----------------------->
 
-<?php
-$chimneys = [
-    1 => ['img' => 'chimney1.jpg', 'name' => 'jednoprieduchový komín'],
-    2 => ['img' => 'chimney2.jpg', 'name' => 'dvojprieduchový komín'],
-    3 => ['img' => 'chimney3.jpg', 'name' => 'komínový sopúch'],
-    4 => ['img' => 'chimney4.jpg', 'name' => 'komínový nadstavec']
-];
-?>
-
-
 <h1>2.3 Postup pri murovaní a príprave komína</h1>
 <h3>Teoretické východiská:</h3>
 1.  Priraďte správne názvoslovie časti komína k obrázkom:<br>
-<?php
-session_start();
-$score = 0;
-$message = '';
-$results = [];
+<div class="quiz-container">
+    <h1>Priraď obrázky k komínom</h1>
+    <?php if ($chimneyMessage): ?>
+        <div class="message"><?php echo htmlspecialchars($chimneyMessage, ENT_QUOTES, 'UTF-8'); ?></div>
+    <?php endif; ?>
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $posted = $_POST['answers'] ?? [];
+    <form method="post">
+        <input type="hidden" name="quiz_type" value="chimneys">
+        <input type="hidden" name="current_page" value="14">
+        <div class="quiz-grid">
+        <?php foreach ($chimneys as $id => $chimney):
+            $chimneySelectedValue = $chimneyResults[$id]['selected'] ?? ((($_POST['quiz_type'] ?? '') === 'chimneys') ? ($_POST['answers'][$id] ?? '') : '');
+        ?>
+            <div class="question">
+                <img src="images/<?php echo htmlspecialchars($chimney['img'], ENT_QUOTES, 'UTF-8'); ?>" alt="Komín <?php echo $id; ?>" class="chimney-image">
+                <select name="answers[<?php echo $id; ?>]">
+                    <option value=""> . . . </option>
+                    <?php foreach ($chimneyOptions as $option): ?>
+                    <option value="<?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>"
+                        <?php if ($chimneySelectedValue !== '' && $chimneySelectedValue === $option) echo 'selected'; ?>>
+                        <?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
 
-    foreach ($chimneys as $id => $chimney) {
-        $selected = isset($posted[$id]) ? trim($posted[$id]) : '';
-        $correct = $chimney['name'];
-        $isCorrect = ($selected !== '' && $selected === $correct);
-        if ($isCorrect) {
-            $score++;
-        }
-        $results[$id] = [
-            'selected' => $selected,
-            'correct' => $correct,
-            'isCorrect' => $isCorrect
-        ];
-    }
-
-    $message = "$score správnych odpovedí z " . count($chimneys) . ".";
-}
-
-
-$options = array_column($chimneys, 'name');
-shuffle($options);
-?>
-<body>
-    <div class="quiz-container">
-        <h1>Priraď obrázky k kominom</h1>
-        <?php if ($message): ?>
-            <div class="message"><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></div>
-        <?php endif; ?>
-        
-        <form method="post">
-            <div class="quiz-grid">
-            <?php foreach ($chimneys as $id => $chimney): 
-                $selectedValue = $results[$id]['selected'] ?? ($_POST['answers'][$id] ?? '');
-            ?>
-                <div class="question">
-                    <img src="images/<?php echo htmlspecialchars($chimney['img'], ENT_QUOTES, 'UTF-8'); ?>" alt="Chimney <?php echo $id; ?>" class="chimney-image">
-                    <select name="answers[<?php echo $id; ?>]">
-                        <option value=""> . . . </option>
-                        <?php foreach ($options as $option): ?>
-                        <option value="<?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>"
-                            <?php if ($selectedValue !== '' && $selectedValue === $option) echo 'selected'; ?>>
-                            <?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>
-                        </option>
-                        <?php endforeach; ?>
-                    </select>
-
-                    <?php if (!empty($results)): 
-                        $r = $results[$id];
-                        if ($r['isCorrect']): ?>
-                            <div class="feedback correct">Správne</div>
-                        <?php else: ?>
-                            <div class="feedback wrong">Správna odpoveď: <?php echo htmlspecialchars($r['correct'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        <?php endif;
-                    endif; ?>
-                </div>
-            <?php endforeach; ?>
+                <?php if (!empty($chimneyResults)):
+                    $chimneyResult = $chimneyResults[$id];
+                    if ($chimneyResult['isCorrect']): ?>
+                        <div class="feedback correct">Správne</div>
+                    <?php else: ?>
+                        <div class="feedback wrong">Správna odpoveď: <?php echo htmlspecialchars($chimneyResult['correct'], ENT_QUOTES, 'UTF-8'); ?></div>
+                    <?php endif;
+                endif; ?>
             </div>
-            
-            <div style="margin-top:20px;">
-                <button type="submit">skontroluj odpovede</button>
-            </div>
-        </form>
-    </div>
-</body>
+        <?php endforeach; ?>
+        </div>
+
+        <div style="margin-top:20px;">
+            <button type="submit">Skontroluj odpovede</button>
+        </div>
+    </form>
+</div>
 2. Vymenujte druhy komínov a popíšte pracovný postup pre murovanie komínov<br>
 <textarea id="listTypesOfChimneys_DescribeWorkProcedure" name="listTypesOfChimneys_DescribeWorkProcedure" rows="5" cols="33"></textarea><br>
 3. Vymenujte, aký materiál, náradie, nástroje a pomôcky potrebujete pre murovanie komínov<br>
 <textarea id="listMaterialsToolsForChimneyMasonry" name="listMaterialsToolsForChimneyMasonry" rows="5" cols="33"></textarea><br>
 4. Podľa druhu použitého paliva komíny rozdeľujeme: (zakrúžkujte správnu odpoveď)<br>
 <img src="images/fuel.jpg"><br>
-<input type="radio" id="chimneyClassification_Gas" name="chimneyClassification" value="Plynnéamurované">Plynné a murované<br>
-<input type="radio" id="chimneyClassification_Liquid" name="chimneyClassification" value="Kvapalnéamontované">Kvapalné a montované<br>
-<input type="radio" id="chimneyClassification_SolidLiquidGas" name="chimneyClassification" value="Tuhékvapalnéaplynné">Tuhé, kvapalné a plynné<br>
+<input type="radio" id="chimneyClassification_Wrong" name="chimneyClassification" value="Wrong">Plynné a murované<br>
+<input type="radio" id="chimneyClassification_Wrong2" name="chimneyClassification" value="Wrong">Kvapalné a montované<br>
+<input type="radio" id="chimneyClassification_Correct" name="chimneyClassification" value="Correct">Tuhé, kvapalné a plynné<br>
 5. Vymenujte druhy komínov podľa opláštenia<br>
 <textarea id="listTypesOfChimneys_ByCladding" name="listTypesOfChimneys_ByCladding" rows="5" cols="33"></textarea><br>
 6. Uveďte, ktoré ochranné pomôcky používame pri murovaní a montovaní komínov<br>
@@ -815,27 +915,27 @@ shuffle($options);
 <img src="images/levelingrail.jpg"><br>
 7. Akým smerom ťaháme nanášací valec: (zakrúžkujte správnu odpoveď)<br>
 <img src="images/approller.jpg"><br>
-<input type="radio" id="applicationRoller_Direction_Toward_Self" name="applicationRoller_Direction" value="smeromksebe">Výlučne smerom k sebe, t.j. za rukoväťou<br>
-<input type="radio" id="applicationRoller_Direction_AwayFrom_Self" name="applicationRoller_Direction" value="smeromodseba">Od seba<br>
-<input type="radio" id="applicationRoller_Direction_Behind_Self" name="applicationRoller_Direction" value="zasebou">Za sebou<br>
+<input type="radio" id="applicationRoller_Direction_Correct" name="applicationRoller_Direction" value="Correct">Výlučne smerom k sebe, t.j. za rukoväťou<br>
+<input type="radio" id="applicationRoller_Direction_Wrong" name="applicationRoller_Direction" value="Wrong">Od seba<br>
+<input type="radio" id="applicationRoller_Direction_Wrong2" name="applicationRoller_Direction" value="Wrong">Za sebou<br>
 8. Ako vypočítame obsah Pm - múru: (zakrúžkujte správnu odpoveď)<br>
 dl – dĺžka múru<br>
 v – výška múru<br>
-<input type="radio" id="calculateWallArea_Pm_LengthPlusHeight" name="calculateWallArea_Pm" value="dlplusv">Pm = dl + v<br>
-<input type="radio" id="calculateWallArea_Pm_LengthTimesHeight" name="calculateWallArea_Pm" value="dlkratv">Pm = dl x v<br>
-<input type="radio" id="calculateWallArea_Pm_LengthMinusHeight" name="calculateWallArea_Pm" value="dlminusv">Pm = dl - v<br>
+<input type="radio" id="calculateWallArea_Pm_Wrong" name="calculateWallArea_Pm" value="Wrong">Pm = dl + v<br>
+<input type="radio" id="calculateWallArea_Pm_Correct" name="calculateWallArea_Pm" value="Correct">Pm = dl x v<br>
+<input type="radio" id="calculateWallArea_Pm_Wrong2" name="calculateWallArea_Pm" value="Wrong">Pm = dl - v<br>
 9. Ako vypočítame obsah Po - okenných otvorov: (zakrúžkujte správnu odpoveď)<br>
 š – šírka otvoru<br>
 v – výška otvoru<br>
-<input type="radio" id="calculateOpeningArea_Po_WidthTimesHeight" name="calculateOpeningArea_Po" value="škratv">Po = š x v<br>
-<input type="radio" id="calculateOpeningArea_Po_WidthPlusHeight" name="calculateOpeningArea_Po" value="šplusv">Po = š + v<br>
-<input type="radio" id="calculateOpeningArea_Po_HeightMinusWidth" name="calculateOpeningArea_Po" value="šminusv">Po = v - š<br>
+<input type="radio" id="calculateOpeningArea_Po_Correct" name="calculateOpeningArea_Po" value="Correct">Po = š x v<br>
+<input type="radio" id="calculateOpeningArea_Po_Wrong" name="calculateOpeningArea_Po" value="Wrong">Po = š + v<br>
+<input type="radio" id="calculateOpeningArea_Po_Wrong2" name="calculateOpeningArea_Po" value="Wrong">Po = v - š<br>
 10. Ako vypočítame obsah múru P - s otvormi: (zakrúžkujte správnu odpoveď)<br>
 Pm – obsah múru<br>
 Po – obsah otvorov<br>
-<input type="radio" id="calculateWallAreaWithOpenings_P_PmPlusPo" name="calculateWallAreaWithOpenings_P" value="PmplusPo">P = Pm + Po<br>
-<input type="radio" id="calculateWallAreaWithOpenings_P_PmMinusPo" name="calculateWallAreaWithOpenings_P" value="PmminusPo">P = Pm - Po<br>
-<input type="radio" id="calculateWallAreaWithOpenings_P_PoMinusPm" name="calculateWallAreaWithOpenings_P" value="Pominuspm">P = Po - Pm<br>
+<input type="radio" id="calculateWallAreaWithOpenings_Wrong" name="calculateWallAreaWithOpenings_P" value="Wrong">P = Pm + Po<br>
+<input type="radio" id="calculateWallAreaWithOpenings_Correct" name="calculateWallAreaWithOpenings_P" value="Correct">P = Pm - Po<br>
+<input type="radio" id="calculateWallAreaWithOpenings_Wrong2" name="calculateWallAreaWithOpenings_P" value="Wrong">P = Po - Pm<br>
 <h3>Postup nadobúdania zručnosti:</h3>
 1. Popíšte všeobecné zásady murovania z tvaroviek<br>
 <textarea id="describeGeneralPrinciples_ShapeBlockMasonry" name="describeGeneralPrinciples_ShapeBlockMasonry" rows="5" cols="33"></textarea><br>
@@ -945,33 +1045,6 @@ Po – obsah otvorov<br>
 
 <!-----------------------    PAGE 23   ----------------------->
 
-<h1>3.6 Kontrola presnosti tvarovkového muriva</h1>
-<h3>Teoretické východiská:</h3>
-1. Určite systém kontroly presnosti murovania tvarovkového muriva<br>
-<textarea id="determineSystem_ControlAccuracy_ShapeBlockMasonry" name="determineSystem_ControlAccuracy_ShapeBlockMasonry" rows="5" cols="33"></textarea><br>
-2. Vymenujte zásady pre dodržanie kontroly presnosti murovania systému Porotherm<br>
-<textarea id="listPrinciples_AccuracyControl_Masonry_PorothermSystem" name="listPrinciples_AccuracyControl_Masonry_PorothermSystem" rows="5" cols="33"></textarea><br>
-3. Popíšte postup pre dodržanie zásad kontroly a presnosti tvarovkového muriva<br>
-<textarea id="describeProcedure_AdherencePrinciples_ControlAccuracy_ShapeBlockMasonry" name="describeProcedure_AdherencePrinciples_ControlAccuracy_ShapeBlockMasonry" rows="5" cols="33"></textarea><br>
-4. Ktoré činitele ovplyvňujú horizontálnu a vertikálnu presnosť tvarovkového muriva<br>
-<textarea id="whichFactors_Affect_HorizontalAndVerticalAccuracy_ShapeBlockMasonry" name="whichFactors_Affect_HorizontalAndVerticalAccuracy_ShapeBlockMasonry" rows="5" cols="33"></textarea><br>
-<h3>Postup nadobúdania zručnosti:</h3>
-1. Určite postup kontroly pri murovaní z tvaroviek<br>
-<textarea id="determineControlProcedure_Masonry_ShapeBlocks" name="determineControlProcedure_Masonry_ShapeBlocks" rows="5" cols="33"></textarea><br>
-2. Demonštrujte a uplatnite nadobudnuté vedomosti a zručnosti pri kontrole murovania z tvaroviek<br>
-3. Určite prípustnú odchýlku pri murovaní z tvaroviek<br>
-<textarea id="determinePermissibleDeviation_Masonry_ShapeBlocks" name="determinePermissibleDeviation_Masonry_ShapeBlocks" rows="5" cols="33"></textarea><br>
-<h3>Sebahodnotenie žiaka:</h3>
-1. Ovládam pracovný postup kontroly presnosti murovania a praktickú činnosť s tým súvisiacu?<br>
-<input type="radio" id="knowMasonryAccuracyControlProcessAndRelatedPracticalActivities_Yes" name="knowMasonryAccuracyControlProcessAndRelatedPracticalActivities" value="Áno">Áno<br>
-<input type="radio" id="knowMasonryAccuracyControlProcessAndRelatedPracticalActivities_Partially" name="knowMasonryAccuracyControlProcessAndRelatedPracticalActivities" value="Čiastočne">Čiastočne<br>
-<input type="radio" id="knowMasonryAccuracyControlProcessAndRelatedPracticalActivities_No" name="knowMasonryAccuracyControlProcessAndRelatedPracticalActivities" value="Nie">Nie<br>
-2. Aké chyby v pracovnej činnosti som urobil počas vyučovacieho dňa?<br>
-<textarea id="mistakesDuringSchoolDay_MasonryAccuracyControl" name="mistakesDuringSchoolDay_MasonryAccuracyControl" rows="5" cols="33"></textarea><br>
-
-<!-------------------    PAGE 24   ----------------------->
-
-<h1>4.1 BOZP pri murovaní kamenného a zmiešaného muriva, náradie, nástroje a drobná mechanizácia</h1>
 <h3>Teoretické východiská:</h3>
 1. Uveďte zásady BOZP pri realizácií kamenného a zmiešaného muriva<br>
 <textarea id="stateBOZPPrinciples_StoneAndMixedMasonry" name="stateBOZPPrinciples_StoneAndMixedMasonry" rows="5" cols="33"></textarea><br>
@@ -1906,7 +1979,7 @@ Aké poznáte ľahké deliace steny zo sadrokartónu<br>
 
 <!-----------------------    PAGE 59   ----------------------->
 
-<h1>1. Čo ovplyvňuje výslednú kvalitu omietok</h1>
+<h1>7.12 Kontrola kvality vnútorných a vonkajších omietok</h1>
 <h3>Teoretické východiská:</h3>
 1. Čo ovplyvňuje výslednú kvalitu omietok<br>
 <textarea id="whatInfluences_FinalQuality_Plaster" name="whatInfluences_FinalQuality_Plaster" rows="5" cols="33"></textarea><br>
@@ -2203,19 +2276,170 @@ Aké poznáte ľahké deliace steny zo sadrokartónu<br>
 <textarea id="whatInfluences_Durability_Hoses_And_Performance_Work" name="whatInfluences_Durability_Hoses_And_Performance_Work" rows="5" cols="33"></textarea><br>
 4. Uveďte, ktoré ochranné pomôcky používame pri manipulácii a spracovaní<br>
 <textarea id="state_WhichProtectiveAids_DoWeUse_During_Manipulation_And_Processing" name="state_WhichProtectiveAids_DoWeUse_During_Manipulation_And_Processing" rows="5" cols="33"></textarea><br>
+5. Uveďte príklad pracovnej čaty so štyrmi skupinami <br>
+<textarea id="state_Example_WorkingCrew_With_Four_Groups" name="state_Example_WorkingCrew_With_Four_Groups" rows="5" cols="33"></textarea><br>
+<h3>Postup nadobúdania zručnosti:</h3>
+1. Umiestnite cvične omietací stroj tak aby bol prístup zo všetkých strán<br>
+2. Prakticky predveďte úlohu 1. skupiny pracovnej čaty<br>
+3. Demonštrujte úlohu 2. a 3. skupiny pracovnej čaty<br>
+<h3>Sebahodnotenie žiaka:</h3>
+1. Ovládam pracovný postup organizácie práce pre strojové omietanie a praktickú činnosť s tým súvisiacu?<br>
+<input type="radio" id="knowWorkProcedure_Organization_Work_For_MachinePlastering_AndRelatedPracticalActivities_Yes" name="knowWorkProcedure_Organization_Work_For_MachinePlastering_AndRelatedPracticalActivities" value="Áno">Áno<br>
+<input type="radio" id="knowWorkProcedure_Organization_Work_For_MachinePlastering_AndRelatedPracticalActivities_Partially" name="knowWorkProcedure_Organization_Work_For_MachinePlastering_AndRelatedPracticalActivities" value="Čiastočne">Čiastočne<br>
+<input type="radio" id="knowWorkProcedure_Organization_Work_For_MachinePlastering_AndRelatedPracticalActivities_No" name="knowWorkProcedure_Organization_Work_For_MachinePlastering_AndRelatedPracticalActivities" value="Nie">Nie<br>
+2. Aké chyby v pracovnej činnosti som urobil počas vyučovacieho dňa?<br>
+<textarea id="mistakesDuringSchoolDay_Organization_Work_For_MachinePlastering" name="mistakesDuringSchoolDay_Organization_Work_For_MachinePlastering" rows="5" cols="33"></textarea><br>
 
+<!-----------------------    PAGE 72   ----------------------->
 
+<h1>9.4 Strojové omietanie suchými omietkami</h1>
+<h3>Teoretické východiská:</h3>
+1. Akým spôsobom sú dodávané suché maltové zmesi na stavbu<br>
+<textarea id="in_WhatWay_AreDelivered_DryMortarMixtures_To_ConstructionSite" name="in_WhatWay_AreDelivered_DryMortarMixtures_To_ConstructionSite" rows="5" cols="33"></textarea><br>
+2. Uveďte rozdiel medzi prípravou a spracovaním suchej omietkovej zmesi a tradičnej maltovej zmesi<br>
+<textarea id="state_Difference_Between_Preparation_And_Processing_DryPlasterMixture_And_Traditional_MortarMixture" name="state_Difference_Between_Preparation_And_Processing_DryPlasterMixture_And_Traditional_MortarMixture" rows="5" cols="33"></textarea><br>
+3. Popíšte postup spracovania omietkovej zmesi zo sila<br>
+<textarea id="describe_Procedure_Processing_PlasterMixture_From_Silo" name="describe_Procedure_Processing_PlasterMixture_From_Silo" rows="5" cols="33"></textarea><br>
+4. Popíšte zásady správneho postupu nanášania suchej zmesi na vopred pripravený podklad a pravidlá BOZP<br>
+<textarea id="describe_Principles_CorrectProcedure_Applying_DryMixture_On_Prepared_Substrate_And_Rules_Bozp" name="describe_Principles_CorrectProcedure_Applying_DryMixture_On_Prepared_Substrate_And_Rules_Bozp" rows="5" cols="33"></textarea><br>
+<h3>Postup nadobúdania zručnosti:</h3>
+1. Prakticky cvične pripravte pomocou omietacieho stroja duo – mix výrobné jadro<br>
+2. Demonštrujte správne nanesenie materiálu a zrovnanie omietky pomocou laty (h profil) <br>
+3. Predveďte správne upravenie jadrovej omietky<br>
+<h3>Sebahodnotenie žiaka:</h3>
+1. Ovládam pracovný postup zhotovenia strojových omietok suchými omietkami a praktickú činnosť s tým súvisiacu?<br>
+<input type="radio" id="knowWorkProcedure_Making_MachinePlasters_DryPlasters_AndRelatedPracticalActivities_Yes" name="knowWorkProcedure_Making_MachinePlasters_DryPlasters_AndRelatedPracticalActivities" value="Áno">Áno<br>
+<input type="radio" id="knowWorkProcedure_Making_MachinePlasters_DryPlasters_AndRelatedPracticalActivities_Partially" name="knowWorkProcedure_Making_MachinePlasters_DryPlasters_AndRelatedPracticalActivities" value="Čiastočne">Čiastočne<br>
+<input type="radio" id="knowWorkProcedure_Making_MachinePlasters_DryPlasters_AndRelatedPracticalActivities_No" name="knowWorkProcedure_Making_MachinePlasters_DryPlasters_AndRelatedPracticalActivities" value="Nie">Nie<br>
+2. Aké chyby v pracovnej činnosti som urobil počas vyučovacieho dňa?<br>
+<textarea id="mistakesDuringSchoolDay_Making_MachinePlasters_DryPlasters" name="mistakesDuringSchoolDay_Making_MachinePlasters_DryPlasters" rows="5" cols="33"></textarea><br>
 
+<!-----------------------    RESULTS   ----------------------->
 
+<script data-pagination-script="true">
+document.addEventListener('DOMContentLoaded', () => {
+    const body = document.body;
+    const scriptNode = document.querySelector('script[data-pagination-script="true"]');
+    const nodes = Array.from(body.childNodes);
+    const pagesContainer = document.createElement('div');
+    pagesContainer.id = 'pages-root';
 
+    const sections = [];
+    let currentSection = null;
 
+    const createSection = (pageNumber) => {
+        currentSection = document.createElement('section');
+        currentSection.className = 'page';
+        currentSection.dataset.page = String(pageNumber);
+        pagesContainer.appendChild(currentSection);
+        sections.push(currentSection);
+    };
 
+    nodes.forEach((node) => {
+        if (node === scriptNode) {
+            return;
+        }
 
+        if (node.nodeType === Node.COMMENT_NODE) {
+            const match = node.nodeValue.match(/PAGE\s+(\d+)/i);
+            if (match) {
+                createSection(parseInt(match[1], 10));
+                body.removeChild(node);
+                return;
+            }
+        }
 
+        if (!currentSection) {
+            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() === '') {
+                body.removeChild(node);
+                return;
+            }
+            createSection(sections.length + 1);
+        }
 
+        currentSection.appendChild(node);
+    });
 
+    if (!sections.length) {
+        return;
+    }
 
+    if (scriptNode) {
+        body.insertBefore(pagesContainer, scriptNode);
+    } else {
+        body.appendChild(pagesContainer);
+    }
 
+    const pages = Array.from(pagesContainer.querySelectorAll('.page'));
+    const totalPages = pages.length;
+    if (!totalPages) {
+        return;
+    }
 
-<!-----------------------    PAGE 74   ----------------------->
+    let activeIndex = Math.min(
+        Math.max((Number(<?php echo (int) $currentPage; ?>) || 1) - 1, 0),
+        totalPages - 1
+    );
+
+    const showPage = (index) => {
+        activeIndex = Math.min(Math.max(index, 0), totalPages - 1);
+        pages.forEach((page, pageIndex) => {
+            page.classList.toggle('active', pageIndex === activeIndex);
+        });
+
+        const activePage = pages[activeIndex];
+        const prevBtn = activePage.querySelector('[data-role="prev"]');
+        const nextBtn = activePage.querySelector('[data-role="next"]');
+        const indicator = activePage.querySelector('.page-indicator');
+
+        if (prevBtn) {
+            prevBtn.disabled = activeIndex === 0;
+        }
+        if (nextBtn) {
+            nextBtn.disabled = activeIndex === totalPages - 1;
+        }
+        if (indicator) {
+            indicator.textContent = `Strana ${activeIndex + 1} / ${totalPages}`;
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    pages.forEach((page) => {
+        const nav = document.createElement('div');
+        nav.className = 'page-nav';
+
+        const prevBtn = document.createElement('button');
+        prevBtn.type = 'button';
+        prevBtn.dataset.role = 'prev';
+        prevBtn.textContent = 'Predošlá strana';
+        prevBtn.addEventListener('click', () => {
+            if (activeIndex > 0) {
+                showPage(activeIndex - 1);
+            }
+        });
+
+        const indicator = document.createElement('span');
+        indicator.className = 'page-indicator';
+
+        const nextBtn = document.createElement('button');
+        nextBtn.type = 'button';
+        nextBtn.dataset.role = 'next';
+        nextBtn.textContent = 'Ďalšia strana';
+        nextBtn.addEventListener('click', () => {
+            if (activeIndex < totalPages - 1) {
+                showPage(activeIndex + 1);
+            }
+        });
+
+        nav.appendChild(prevBtn);
+        nav.appendChild(indicator);
+        nav.appendChild(nextBtn);
+        page.appendChild(nav);
+    });
+
+    showPage(activeIndex);
+});
+</script>
+</body>
 </html>
