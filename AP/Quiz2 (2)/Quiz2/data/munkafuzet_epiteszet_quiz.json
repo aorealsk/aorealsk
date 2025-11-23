@@ -1,0 +1,1675 @@
+{
+  "quiz_title": "Munkafüzet – Építészet",
+  "sections": [
+    {
+      "section_id": "ep_section_01",
+      "title": "Základné stavebné materiály",
+      "questions": [
+        {
+          "id": "ep_q001",
+          "type": "text_input",
+          "text": {
+            "hu": "Természetes építőanyagok (írjon példát)",
+            "sk": "Prírodné stavebné materiály (uveďte príklad)",
+            "en": "Natural building materials (give an example)"
+          },
+          "placeholder": "Sem napíš svoj príklad...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q002",
+          "type": "text_input",
+          "text": {
+            "hu": "Mesterséges építőanyagok (írjon példát)",
+            "sk": "Umelé stavebné materiály (uveďte príklad)",
+            "en": "Artificial building materials (give an example)"
+          },
+          "placeholder": "Sem napíš svoj príklad...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q003",
+          "type": "text_input",
+          "text": {
+            "hu": "Növényi eredetű anyagok (írjon példát)",
+            "sk": "Materiály rastlinného pôvodu (uveďte príklad)",
+            "en": "Materials of plant origin (give an example)"
+          },
+          "placeholder": "Napíš sem svoj príklad...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q004",
+          "type": "text_input",
+          "text": {
+            "hu": "Ásványi anyagok (írjon példát)",
+            "sk": "Minerálne materiály (uveďte príklad)",
+            "en": "Mineral materials (give an example)"
+          },
+          "placeholder": "Napíš sem svoj príklad...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q005",
+          "type": "text_input",
+          "text": {
+            "hu": "Magyarázza el az építőanyag térfogatsűrűségének fogalmát.",
+            "sk": "Vysvetlite pojem objemová hustota stavebného materiálu.",
+            "en": "Explain the concept of the volumetric density of a building material."
+          },
+          "placeholder": "Sem napíš vysvetlenie...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q006",
+          "type": "text_input",
+          "text": {
+            "hu": "Magyarázza el az építőanyag vízfelvételének fogalmát.",
+            "sk": "Vysvetlite pojem nasákavosť stavebného materiálu.",
+            "en": "Explain the concept of water absorption of a building material."
+          },
+          "placeholder": "Sem napíš vysvetlenie...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q007",
+          "type": "text_input",
+          "text": {
+            "hu": "Magyarázza el az építőanyag hőszigetelő tulajdonságának fogalmát.",
+            "sk": "Vysvetlite pojem tepelno-izolačná vlastnosť stavebného materiálu.",
+            "en": "Explain the concept of thermal insulation property of a building material."
+          },
+          "placeholder": "Sem napíš vysvetlenie...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q008a",
+          "type": "sort_list",
+          "text": {
+            "hu": "Rendezze az építőanyagokat térfogatsűrűség szerint (legnagyobbtól a legkisebbig).",
+            "sk": "Usporiadajte stavebné materiály podľa objemovej hustoty (od najväčšej po najmenšiu).",
+            "en": "Arrange the building materials by density (from highest to lowest)."
+          },
+          "materials": {
+            "sk": ["Oceľ","Kameň","Tehla pálená","Betónová súprava","Sadrokartón","Tehla nepálená","Drevo","Drevovláknitá doska","Ovčia vlna","Trstina","Slama"],
+            "hu": ["Acél","Kő","Égetett tégla","Beton keverék","Gipszkarton","Nyers tégla","Fa","Farostlemez","Gyapjú","Nád","Szalma"],
+            "en": ["Steel","Stone","Fired brick","Concrete mix","Drywall","Adobe brick","Wood","Fiberboard","Sheep wool","Reed","Straw"]
+          },
+          "correct_order": ["Steel","Stone","Fired brick","Concrete mix","Drywall","Adobe brick","Wood","Fiberboard","Sheep wool","Reed","Straw"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q008b",
+          "type": "sort_list",
+          "text": {
+            "hu": "Rendezze az építőanyagokat nedvszívó képesség szerint (a legalacsonyabbtól a legmagasabbig).",
+            "sk": "Usporiadajte materiály podľa nasákavosti (od najnižšej po najvyššiu).",
+            "en": "Arrange materials by water absorption (from lowest to highest)."
+          },
+          "materials": {
+            "sk": ["Oceľ","Kameň","Betónová súprava","Sadrokartón","Tehla pálená","Drevo","Tehla nepálená","Drevovláknitá doska","Trstina","Slama","Ovčia vlna"],
+            "hu": ["Acél","Kő","Beton keverék","Gipszkarton","Égetett tégla","Fa","Nyers tégla","Farostlemez","Nád","Szalma","Gyapjú"],
+            "en": ["Steel","Stone","Concrete mix","Drywall","Fired brick","Wood","Adobe brick","Fiberboard","Reed","Straw","Sheep wool"]
+          },
+          "correct_order": ["Steel","Stone","Concrete mix","Drywall","Fired brick","Wood","Adobe brick","Fiberboard","Reed","Straw","Sheep wool"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q008c",
+          "type": "sort_list",
+          "text": {
+            "hu": "Rendezze az anyagokat hőszigetelési tulajdonságok szerint (a legjobbtól a legrosszabbig).",
+            "sk": "Usporiadajte materiály podľa tepelnej izolácie (od najlepšej po najhoršiu).",
+            "en": "Sort materials by thermal insulation (best to worst)."
+          },
+          "materials": {
+            "sk": ["Ovčia vlna","Slama","Trstina","Drevovláknitá doska","Drevo","Sadrokartón","Tehla nepálená","Tehla pálená","Betónová súprava","Kameň","Oceľ"],
+            "hu": ["Gyapjú","Szalma","Nád","Farostlemez","Fa","Gipszkarton","Nyers tégla","Égetett tégla","Beton keverék","Kő","Acél"],
+            "en": ["Sheep wool","Straw","Reed","Fiberboard","Wood","Drywall","Adobe brick","Fired brick","Concrete mix","Stone","Steel"]
+          },
+          "correct_order": ["Sheep wool","Straw","Reed","Fiberboard","Wood","Drywall","Adobe brick","Fired brick","Concrete mix","Stone","Steel"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q009",
+          "type": "single_choice",
+          "text": {
+            "hu": "Ismeri a hagyományos építőanyagok tulajdonságait?",
+            "sk": "Poznám vlastnosti tradičných stavebných materiálov.",
+            "en": "Do you know the properties of traditional building materials?"
+          },
+          "options": [
+            { "key": "A", "text": {"hu": "Igen", "sk": "Áno", "en": "Yes"} },
+            { "key": "B", "text": {"hu": "Részben", "sk": "Čiastočne", "en": "Partially"} },
+            { "key": "C", "text": {"hu": "Nem, ismételnem kell", "sk": "Nie, musím si zopakovať", "en": "No, I need to revise"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true,
+          "image": null
+        },
+        {
+          "id": "ep_q010",
+          "type": "text_input",
+          "text": {
+            "hu": "Milyen hibákat követett el a feladatok megoldása során?",
+            "sk": "Aké chyby som pri riešení úloh počas školského dňa urobil(a)?",
+            "en": "What mistakes did I make during the day while solving tasks?"
+          },
+          "placeholder": "Tu napíš svoje poznámky...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        }
+      ]
+    },
+
+
+
+
+    {
+      "section_id": "ep_section_02",
+      "title": "Betón, debnenie a bezpečnosť pri práci",
+      "questions": [
+        {
+          "id": "ep_q011",
+          "type": "single_choice",
+          "text": {
+            "hu": "A homok és kavics arányának milyennek kell lennie?",
+            "sk": "Pomer piesku a štrku by mal byť:",
+            "en": "The ratio of sand to gravel should be:"
+          },
+          "options": [
+            { "key": "A", "text": {"hu": "3:2 és 3:1 között", "sk": "medzi 3:2 a 3:1", "en": "between 3:2 and 3:1"} },
+            { "key": "B", "text": {"hu": "3:3 és 3:4 között", "sk": "medzi 3:3 a 3:4", "en": "between 3:3 and 3:4"} },
+            { "key": "C", "text": {"hu": "2:1 és 2:2 között", "sk": "medzi 2:1 a 2:2", "en": "between 2:1 and 2:2"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true,
+          "image": null
+        },
+        {
+          "id": "ep_q012",
+          "type": "single_choice",
+          "text": {
+            "hu": "A cement és adalékanyag aránya:",
+            "sk": "Pomer cementu a kameniva:",
+            "en": "The ratio of cement to aggregate:"
+          },
+          "options": [
+            { "key": "A", "text": {"hu": "200–240 kg/m³", "sk": "200–240 kg/m³", "en": "200–240 kg/m³"} },
+            { "key": "B", "text": {"hu": "100–150 kg/m³", "sk": "100–150 kg/m³", "en": "100–150 kg/m³"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true,
+          "image": null
+        },
+        {
+          "id": "ep_q013",
+          "type": "single_choice",
+          "text": {
+            "hu": "A víz aránya a száraz keverékhez (cement és adalékanyag):",
+            "sk": "Pomer vody k suchej zmesi cementu a kameniva:",
+            "en": "The water-to-dry mixture ratio (cement and aggregate):"
+          },
+          "options": [
+            { "key": "A", "text": {"hu": "Minimálisan 0,23 l/kg cement", "sk": "Minimálne 0,23 l/kg cementu", "en": "At least 0.23 l/kg of cement"} },
+            { "key": "B", "text": {"hu": "Minimálisan 2,3 l/kg cement", "sk": "Minimálne 2,3 l/kg cementu", "en": "At least 2.3 l/kg of cement"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true,
+          "image": null
+        },
+        {
+          "id": "ep_q014",
+          "type": "text_input",
+          "text": {
+            "hu": "Vágás és hajlítás közben a munkásoknak védő ... kell viselniük.",
+            "sk": "Pri rezaní a ohýbaní betónskej ocele musia mať pracovníci ochranné .........................",
+            "en": "When cutting and bending rebar, workers must wear protective ........................."
+          },
+          "placeholder": "Napíš, aký ochranný prostriedok je potrebný",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q015",
+          "type": "text_input",
+          "text": {
+            "hu": "A keverő fém szerkezete legyen ...",
+            "sk": "Kovová konštrukcia miešačky musí mať ................................",
+            "en": "The metal frame of the mixer must have ................................"
+          },
+          "placeholder": "Sem doplň odpoveď...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q016",
+          "type": "text_input",
+          "text": {
+            "hu": "A tápkábel gumiburkolatú legyen, ne feküdjön a földön, hogy az szigetelés ne ... és ne sérüljön.",
+            "sk": "Prívodný kábel musí byť v gumovom plášti, nesmie ležať na zemi, aby sa izolácia ................................. a nepoškodila.",
+            "en": "The power cable must be rubber-coated and must not lie on the ground so that the insulation does not ................................. and become damaged."
+          },
+          "placeholder": "Doplň text...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q017",
+          "type": "text_input",
+          "text": {
+            "hu": "Mi a betonkeverék lerakásának első lépése?",
+            "sk": "Aký je prvý krok pri príprave debnenia?",
+            "en": "What is the first step in formwork preparation?"
+          },
+          "placeholder": "Sem napíš prvý krok...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q018",
+          "type": "text_input",
+          "text": {
+            "hu": "Mi a második lépés a zsaluzat előkészítése során?",
+            "sk": "Aký je druhý krok v postupe prípravy debnenia?",
+            "en": "What is the second step in the process of formwork preparation?"
+          },
+          "placeholder": "Sem napíš druhý krok...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q019",
+          "type": "text_input",
+          "text": {
+            "hu": "Mi a harmadik lépés?",
+            "sk": "Čo je treba urobiť ako tretí krok?",
+            "en": "What is the third step?"
+          },
+          "placeholder": "Napíš tretí krok...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q020",
+          "type": "text_input",
+          "text": {
+            "hu": "Mi a negyedik fázis?",
+            "sk": "Aká je štvrtá fáza prípravy?",
+            "en": "What is the fourth phase of preparation?"
+          },
+          "placeholder": "Sem napíš štvrtú fázu...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q021",
+          "type": "text_input",
+          "text": {
+            "hu": "Mit tartalmaz az ötödik lépés?",
+            "sk": "Čo obsahuje piaty krok postupu?",
+            "en": "What does the fifth step contain?"
+          },
+          "placeholder": "Sem napíš odpoveď...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q022",
+          "type": "text_input",
+          "text": {
+            "hu": "Mi a hatodik fázis?",
+            "sk": "Ako pokračuje postup v šiestej fáze?",
+            "en": "How does the process continue in the sixth phase?"
+          },
+          "placeholder": "Sem napíš šiestu fázu...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        }
+      ]
+    },
+
+
+
+
+    {
+      "section_id": "ep_section_03",
+      "title": "Murárske náradie a pomôcky",
+      "questions": [
+
+        {
+          "id": "ep_extra_01",
+          "type": "text_input",
+          "text": {
+            "sk": "Popíšte jednotlivé prvky venca.",
+            "en": "Describe the individual components of the concrete ring beam.",
+            "hu": "Írja le a koszorú egyes elemeit."
+          },
+          "placeholder": {
+            "sk": "Odpoveď...",
+            "en": "Your answer...",
+            "hu": "Válasz..."
+          },
+          "evaluated": false,
+          "save_to_file": true
+        },
+
+        {
+          "id": "ep_extra_02",
+          "type": "text_input",
+          "text": {
+            "sk": "Prečo je v konštrukcii umiestnený polystyrén?",
+            "en": "Why is polystyrene placed inside the construction?",
+            "hu": "Miért helyeznek polisztirolt a szerkezetbe?"
+          },
+          "placeholder": {
+            "sk": "Odpoveď...",
+            "en": "Your answer...",
+            "hu": "Válasz..."
+          },
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_03",
+          "type": "text_input",
+          "text": {
+            "sk": "Ako budeme polievať výstuž?",
+            "en": "How will we water/soak the reinforcement?",
+            "hu": "Hogyan fogjuk locsolni a vasalatot?"
+          },
+          "placeholder": {
+            "sk": "Odpoveď...",
+            "en": "Your answer...",
+            "hu": "Válasz..."
+          },
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_04",
+          "type": "text_input",
+          "text": {
+            "sk": "Popíšte výhody betónu:",
+            "en": "Describe advantages of concrete:",
+            "hu": "Írja le a beton előnyeit:"
+          },
+          "placeholder": {
+            "sk": "Výhody...",
+            "en": "Advantages...",
+            "hu": "Előnyök..."
+          },
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_05",
+          "type": "text_input",
+          "text": {
+            "sk": "Popíšte nevýhody betónu:",
+            "en": "Describe disadvantages of concrete:",
+            "hu": "Írja le a beton hátrányait:"
+          },
+          "placeholder": {
+            "sk": "Nevýhody...",
+            "en": "Disadvantages...",
+            "hu": "Hátrányok..."
+          },
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_06",
+          "type": "text_input",
+          "text": {
+            "sk": "Popíšte základné charakteristiky jednotlivých druhov betónu:",
+            "en": "Describe the characteristics of each type of concrete:",
+            "hu": "Írja le az egyes betonfajták jellemzőit:"
+          },
+          "subfields": [
+            "Obyčajný betón",
+            "Slabo vystužený betón",
+            "Oceľobetón",
+            "Predpätý betón",
+            "Ľahký pórobetón"
+          ],
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_07",
+          "type": "text_input",
+          "text": {
+            "sk": "Doplňte jednotlivé triedy betónu do tabuľky:",
+            "en": "Fill in the concrete strength classes:",
+            "hu": "Egészítse ki a beton szilárdsági osztályait:"
+          },
+          "subfields": [
+            "B5", "B7.5", "B10", "B___", "B15", "B___", "B25", "B30", "B___", "B40", "B45", "B___", "B55", "B60"
+          ],
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_08",
+          "type": "text_input",
+          "text": {
+            "sk": "Popíšte jednotlivé časti miešačky:",
+            "en": "Describe the parts of the concrete mixer:",
+            "hu": "Nevezze meg a betonkeverő részeit:"
+          },
+          "image": "/assets/images/miesacka.jpg",
+          "subfields": [
+            "1.", "2.", "3.", "4."
+          ],
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_09",
+          "type": "text_input",
+          "text": {
+            "sk": "Prečo je debnenie zmáčané?",
+            "en": "Why is the formwork moistened?",
+            "hu": "Miért locsolják meg a zsaluzatot?"
+          },
+          "placeholder": {
+            "sk": "Vaša odpoveď...",
+            "en": "Your answer...",
+            "hu": "Válasz..."
+          },
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_10",
+          "type": "text_input",
+          "text": {
+            "sk": "Popíšte jednotlivé časti krabice z obrázka:",
+            "en": "Describe the parts of the box shown in the image:",
+            "hu": "Nevezze meg a képen látható doboz részeit:"
+          },
+          "image": "/assets/images/krabica.jpg",
+          "subfields": [
+            "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8."
+          ],
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_11",
+          "type": "text_input",
+          "text": {
+            "sk": "Popíšte spôsob statického ručného zhutňovania betónovej zmesi:",
+            "en": "Describe the method of static hand compaction of concrete:",
+            "hu": "Írja le a beton kézi statikus tömörítését:"
+          },
+          "placeholder": {
+            "sk": "Vaša odpoveď...",
+            "en": "Your answer...",
+            "hu": "Válasz..."
+          },
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_12",
+          "type": "text_input",
+          "text": {
+            "sk": "Vymenujte metódy ručného zhutňovania betónovej zmesi a potrebné nástroje:",
+            "en": "List the manual compaction methods for concrete and the required tools:",
+            "hu": "Sorolja fel a beton kézi tömörítési módszereit és az ehhez szükséges eszközöket:"
+          },
+          "placeholder": {
+            "sk": "Odpoveď...",
+            "en": "Answer...",
+            "hu": "Válasz..."
+          },
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_q023",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/lyzica.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Kőműveskanál", "sk": "Murárska lyžica", "en": "Mason's trowel"} },
+            { "key": "B", "text": {"hu": "Keverőlapát", "sk": "Naberacka murárska", "en": "Mortar scoop"} },
+            { "key": "C", "text": {"hu": "Csákány", "sk": "Krompáč", "en": "Pickaxe"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+
+
+        {
+          "id": "ep_q024",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/naberacka.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Keverőlapát", "sk": "Naberacka murárska", "en": "Mortar scoop"} },
+            { "key": "B", "text": {"hu": "Kőműveskanál", "sk": "Murárska lyžica", "en": "Mason's trowel"} },
+            { "key": "C", "text": {"hu": "Penová stierka", "sk": "Penová stierka", "en": "Foam trowel"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q025",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/krompac.png",
+          "options": [
+            { "key": "A", "text": {"hu": "Csákány", "sk": "Krompáč", "en": "Pickaxe"} },
+            { "key": "B", "text": {"hu": "Spakli", "sk": "Škrabák", "en": "Scraper"} },
+            { "key": "C", "text": {"hu": "Penová stierka", "sk": "Penová stierka", "en": "Foam trowel"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q026",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/sb.png",
+          "options": [
+            { "key": "A", "text": {"hu": "Spakli", "sk": "Škrabák na briyolit", "en": "Scraper for briyolit"} },
+            { "key": "B", "text": {"hu": "Csákány", "sk": "Krompáč", "en": "Pickaxe"} },
+            { "key": "C", "text": {"hu": "Habos simító", "sk": "Penová stierka", "en": "Foam trowel"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q027",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/penst.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Penová stierka", "sk": "Penová stierka", "en": "Foam trowel"} },
+            { "key": "B", "text": {"hu": "Keverőlapát", "sk": "Naberacka murárska", "en": "Mortar scoop"} },
+            { "key": "C", "text": {"hu": "Spakli", "sk": "Škrabák", "en": "Scraper"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q028",
+          "type": "image_label",
+          "text": {
+            "hu": "Jelölje meg, melyik a helyes kép a leíráshoz.",
+            "sk": "Podšívka (slovne ju opíšte a označte na obrázku).",
+            "en": "Underlay (describe in words and mark on the picture)."
+          },
+          "image": "/assets/images/pods.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Podšívka 1", "sk": "Podšívka 1", "en": "Underlay 1"} },
+            { "key": "B", "text": {"hu": "Podšívka 2", "sk": "Podšívka 2", "en": "Underlay 2"} },
+            { "key": "C", "text": {"hu": "Podšívka 3", "sk": "Podšívka 3", "en": "Underlay 3"} }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q029",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel az alapvető kőműves szerszámokat.",
+            "sk": "Vymenujte základné murárske nástroje.",
+            "en": "List the basic masonry tools."
+          },
+          "placeholder": "Sem napíš nástroje...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q030",
+          "type": "single_choice",
+          "text": {
+            "hu": "Mi a válaszfal?",
+            "sk": "Priečka je:",
+            "en": "A partition wall is:"
+          },
+          "options": [
+            { "key": "A", "text": {"hu": "A tégla rövidebb oldalával a fal síkja felé fektetve", "sk": "tehla položená kratšou stranou k lícu muriva", "en": "brick laid with the shorter side facing the wall face"} },
+            { "key": "B", "text": {"hu": "A tégla hosszabb oldalával a fal síkja felé fektetve", "sk": "tehla položená dlhšou stranou k lícu muriva", "en": "brick laid with the longer side facing the wall face"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q031",
+          "type": "text_input",
+          "text": {
+            "hu": "A falazóanyagot úgy kell elhelyezni, hogy legalább ....... széles munkafelület álljon rendelkezésre.",
+            "sk": "Murovací materiál musí byť položený tak, aby na prácu bola k dispozícii aspoň .......... široká voľná pracovná plocha.",
+            "en": "Masonry material must be laid so that at least ........ wide working surface is available."
+          },
+          "placeholder": "Sem napíš číslo...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_extra_13",
+          "type": "text_input",
+          "text": {
+            "sk": "Opíšte proces murovania (môžete použiť obrázky z učebnice technológie pre 1. ročník):",
+            "en": "Describe the bricklaying process (you may reference images from the 1st-year construction technology textbook):",
+            "hu": "Írja le a falazási folyamatot (használhatja az első éves technológiai tankönyv képeit):"
+          },
+          "subfields": [
+            "Príprava pracoviska",
+            "Príprava materiálu a náradia",
+            "Zakladanie muriva",
+            "Nanášanie malty",
+            "Ukladanie tehál",
+            "Kontrola rovinnosti a zvislosti",
+            "Viazanie tehál",
+            "Doplnenie škár a úpravy",
+            "Kontrola kvality a dokončenie"
+          ],
+          "evaluated": false,
+          "save_to_file": true
+        }
+
+      ]
+    },
+
+
+
+
+    {
+      "section_id": "ep_section_04",
+      "title": "Tesárske, drevárske a kamenárske práce",
+      "questions": [
+
+        {
+          "id": "ep_extra_14",
+          "type": "image_label",
+          "text": {
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "hu": "Nevezze meg, mit lát a képen.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/zm.jpg",
+          "options": [
+            { "key": "A", "text": {"sk": "Základ muriva", "hu": "A falazat alapja", "en": "Wall foundation"} },
+            { "key": "B", "text": {"sk": "Hotové murivo", "hu": "Kész falazat", "en": "Finished masonry"} },
+            { "key": "C", "text": {"sk": "Debnenie", "hu": "Zsaluzat", "en": "Formwork"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_15",
+          "type": "text_input",
+          "text": {
+            "sk": "Popíšte, čo vidíte na obrázku.",
+            "hu": "Írja le a képet.",
+            "en": "Describe what you see in the picture."
+          },
+          "image": "/assets/images/murivo.jpg",
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_16",
+          "type": "image_label",
+          "text": {
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "hu": "Nevezze meg, mit lát a képen.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/VO.jpg",
+          "options": [
+            { "key": "A", "text": {"sk": "Väzba muriva", "hu": "Falazatkötés", "en": "Brick bonding"} },
+            { "key": "B", "text": {"sk": "Svojpomocné murivo", "hu": "Saját falazat", "en": "Self-built masonry"} },
+            { "key": "C", "text": {"sk": "Debnenie stenové", "hu": "Falzsaluzat", "en": "Wall formwork"} }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_17",
+          "type": "text_input",
+          "text": {
+            "sk": "Vypočítajte spotrebu plných tehál a malty (použite tabuľku).",
+            "hu": "Számítsa ki a tömör téglák és habarcsok fogyasztását (használja a táblázatot).",
+            "en": "Calculate the consumption of solid bricks and mortar (use the table)."
+          },
+          "image": "/assets/images/tabulka.png",
+          "subfields": [
+            "Objem muriva V = l · h · s",
+            "Výpočet objemu V =",
+            "Počet tehál =",
+            "Množstvo malty =",
+            "Záverečná odpoveď"
+          ],
+          "evaluated": false,
+          "save_to_file": true
+        },
+        {
+          "id": "ep_extra_18",
+          "type": "single_choice",
+          "text": {
+            "sk": "Okná a dvere je možné namontovať (zakrúžkujte správnu odpoveď):",
+            "en": "Windows and doors can be installed (circle the correct answer):",
+            "hu": "Az ablakok és ajtók a következőképpen szerelhetők be (karikázza be a helyes választ):"
+          },
+          "options": [
+            { "key": "A", "text": { "sk": "súčasne s murivom", "en": "simultaneously with masonry", "hu": "a falazással egy időben" } },
+            { "key": "B", "text": { "sk": "po dokončení muriva (do ponechaných otvorov)", "en": "after masonry is finished (into the remaining openings)", "hu": "a falazat befejezése után (a meghagyott nyílásokba)" } }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_19",
+          "type": "single_choice",
+          "text": {
+            "sk": "Aby sa zabránilo skrúteniu zárubní a aby sa rýchlejšie namontovali, používajú sa:",
+            "en": "To prevent warping of door frames and to speed up installation, the following are used:",
+            "hu": "A tokok elcsavarodásának megelőzésére és gyorsabb szerelésére az alábbiakat használják:"
+          },
+          "options": [
+            { "key": "A", "text": { "sk": "tesárska zárubňa", "en": "carpentry frame", "hu": "ácstokeret" } },
+            { "key": "B", "text": { "sk": "drevený výstužný rám", "en": "wooden reinforcing frame", "hu": "fa megerősítő keret" } },
+            { "key": "C", "text": { "sk": "lešenie", "en": "scaffolding", "hu": "állvány" } },
+            { "key": "D", "text": { "sk": "obloženie", "en": "lining / casing", "hu": "burkolat" } }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+
+        {
+          "id": "ep_q032",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/TH.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Asztalos gyalugép", "sk": "Tesárska hobľovačka", "en": "Carpenter’s planer"} },
+            { "key": "B", "text": {"hu": "Fűrész", "sk": "Píla", "en": "Saw"} },
+            { "key": "C", "text": {"hu": "Kalapács", "sk": "Kladivo", "en": "Hammer"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q033",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/TPS.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Asztalos munkapad", "sk": "Tesársky pracovný stôl", "en": "Carpenter’s workbench"} },
+            { "key": "B", "text": {"hu": "Csavarhúzó", "sk": "Skrutkovač", "en": "Screwdriver"} },
+            { "key": "C", "text": {"hu": "Derékszög", "sk": "Uholník", "en": "Square"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q034",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/skr.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Skrupovák", "sk": "Skrutkovač", "en": "Screwdriver"} },
+            { "key": "B", "text": {"hu": "Kladivo", "sk": "Kladivo murárske", "en": "Mason’s hammer"} },
+            { "key": "C", "text": {"hu": "Csapó fűrész", "sk": "Píla čapovka", "en": "Tenon saw"} }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_uholnik",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/uhol.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Derékszög", "sk": "Drevený uholník", "en": "Wooden square"} },
+            { "key": "B", "text": {"hu": "Fűrész", "sk": "Píla", "en": "Saw"} },
+            { "key": "C", "text": {"hu": "Véső", "sk": "Dláto", "en": "Chisel"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_ocaska",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/ocaska.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Lombfűrész", "sk": "Dierovka", "en": "Fret saw"} },
+            { "key": "B", "text": {"hu": "Kézifűrész", "sk": "Píla ocaska", "en": "Hand saw"} },
+            { "key": "C", "text": {"hu": "Csapó fűrész", "sk": "Píla čapovka", "en": "Tenon saw"} }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_dierovka",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/dierovka.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Lyukfűrész", "sk": "Dierovka", "en": "Fret saw"} },
+            { "key": "B", "text": {"hu": "Kőműveskanál", "sk": "Murárska lyžica", "en": "Trowel"} },
+            { "key": "C", "text": {"hu": "Véső", "sk": "Dláto", "en": "Chisel"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_capovka",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/capovka.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Lyukfűrész", "sk": "Dierovka", "en": "Fret saw"} },
+            { "key": "B", "text": {"hu": "Csapó fűrész", "sk": "Píla čapovka", "en": "Tenon saw"} },
+            { "key": "C", "text": {"hu": "Kézifűrész", "sk": "Píla ocaska", "en": "Hand saw"} }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_dlato",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/klin.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Kalapács", "sk": "Kladivo", "en": "Hammer"} },
+            { "key": "B", "text": {"hu": "Véső", "sk": "Dlátо", "en": "Chisel"} },
+            { "key": "C", "text": {"hu": "Ék", "sk": "Klin", "en": "Wedge"} }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q035",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/kladivo.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Kladivo", "sk": "Kladivo", "en": "Hammer"} },
+            { "key": "B", "text": {"hu": "Véső", "sk": "Sekáč", "en": "Chisel"} },
+            { "key": "C", "text": {"hu": "Ék", "sk": "Klin", "en": "Wedge"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_buracie_kladivo",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/bkladivo.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Fúró", "sk": "Vŕtačka", "en": "Drill"} },
+            { "key": "B", "text": {"hu": "Kalapács", "sk": "Kladivo", "en": "Hammer"} },
+            { "key": "C", "text": {"hu": "Búracie kladivo", "sk": "Búracie kladivo", "en": "Demolition hammer"} }
+          ],
+          "correct": ["C"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_suprava_sekacov",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/suprava_sekacov.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Csavarhúzó készlet", "sk": "Sada skrutkovačov", "en": "Screwdriver set"} },
+            { "key": "B", "text": {"hu": "vésők bontókalapácsokhoz", "sk": " sekáče pre búracie kladivá", "en": "chisels for demolition hammers"} },
+            { "key": "C", "text": {"hu": "Kulcs készlet", "sk": "Sada kľúčov", "en": "Wrench set"} }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_extra_klin",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/klin.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Kalapács", "sk": "Kladivo", "en": "Hammer"} },
+            { "key": "B", "text": {"hu": "Véső", "sk": "Dlátо", "en": "Chisel"} },
+            { "key": "C", "text": {"hu": "Ék", "sk": "Klin", "en": "Wedge"} }
+          ],
+          "correct": ["C"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q036",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel, milyen műveletek szükségesek a kövek megmunkálása előtt.",
+            "sk": "Aké úkony je potrebné vykonať s kameňmi pred ich opracovaním?",
+            "en": "What operations must be performed on stones before processing?"
+          },
+          "placeholder": "Sem napíš úkony...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_extra043",
+          "type": "text_input",
+          "text": {
+            "hu": "A kézi famegmunkálás alapmunkája a következőket tartalmazza:",
+            "sk": "Základné práce ručného opracovania dreva zahŕňajú:",
+            "en": "The basic manual wood-processing operations include:"
+          },
+          "placeholder": "Sem napíš zoznam postupov...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_extra044",
+          "type": "text_input",
+          "text": {
+            "hu": "A kő aprítása a következőképpen történik:",
+            "sk": "Kameň sa drví takto:",
+            "en": "Stone crushing is performed as follows:"
+          },
+          "placeholder": "Opíš postup...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_extra045",
+          "type": "text_input",
+          "text": {
+            "hu": "A kő fűrészelése (vágása) a következőképpen történik:",
+            "sk": "Rezanie kameňa sa vykonáva takto:",
+            "en": "Stone cutting (sawing) is done as follows:"
+          },
+          "placeholder": "Opíš proces rezania...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_extra046",
+          "type": "text_input",
+          "text": {
+            "hu": "A kő polírozása, csiszolása az alábbiak szerint történik:",
+            "sk": "Leštenie a brúsenie kameňa sa vykonáva takto:",
+            "en": "Stone polishing and grinding is performed as follows:"
+          },
+          "placeholder": "Napíš opis leštenia...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_extra047",
+          "type": "text_input",
+          "text": {
+            "hu": "A kőfúrás a következőképpen történik:",
+            "sk": "Vŕtanie kameňa sa vykonáva takto:",
+            "en": "Stone drilling is performed as follows:"
+          },
+          "placeholder": "Opíš postup vŕtania...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+
+        {
+          "id": "ep_q037",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel, milyen műveletek szükségesek a kőlapok megmunkálása előtt.",
+            "sk": "Aké úkony je potrebné vykonať s kamennými doskami pred ich opracovaním?",
+            "en": "What steps are necessary before processing stone slabs?"
+          },
+          "placeholder": "Sem napíš úkony...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q038",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel a fa szárításának két módját.",
+            "sk": "Aké sú dva spôsoby sušenia dreva?",
+            "en": "What are the two methods of drying wood?"
+          },
+          "placeholder": "Sem napíš spôsoby...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q039",
+          "type": "text_input",
+          "text": {
+            "hu": "Mi az impregnálás és hogyan történik?",
+            "sk": "Čo je to impregnácia dreva a ako prebieha?",
+            "en": "What is wood impregnation and how does it work?"
+          },
+          "placeholder": "Sem napíš odpoveď...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q040",
+          "type": "text_input",
+          "text": {
+            "hu": "Mire kell figyelni a fa tárolásakor?",
+            "sk": "Na čo treba dávať pozor pri skladovaní dreva?",
+            "en": "What should be considered when storing wood?"
+          },
+          "placeholder": "Sem napíš odpoveď...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q041",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel a kézi kőmegmunkálás alapműveleteit.",
+            "sk": "Základné práce ručného spracovania kameňa zahŕňajú:",
+            "en": "The basic operations of manual stone processing include:"
+          },
+          "placeholder": "Napíš zoznam...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        },
+        {
+          "id": "ep_q042",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel a kézi famegmunkálás alapműveleteit.",
+            "sk": "Základné práce pri ručnom opracovaní dreva zahŕňajú:",
+            "en": "The basic operations of manual wood processing include:"
+          },
+          "placeholder": "Napíš zoznam...",
+          "save_to_file": true,
+          "evaluated": false,
+          "image": null
+        }
+      ]
+    },
+
+
+
+
+    {
+      "section_id": "ep_section_05",
+      "title": "Kov, plast a sadrokartón – spracovanie a náradie",
+      "questions": [
+        {
+          "id": "ep_q043",
+          "type": "text_input",
+          "text": {
+            "hu": "Mit lát a képen? Írja le, mire használható.",
+            "sk": "Čo vidíte na obrázku? Napíšte, na čo sa používa.",
+            "en": "What do you see in the picture? Describe its use."
+          },
+          "image": "/assets/images/prav.jpg",
+          "placeholder": "Sem napíš, na čo sa používa...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q044",
+          "type": "text_input",
+          "text": {
+            "hu": "Mit lát a képen? Írja le, mire használható.",
+            "sk": "Čo vidíte na obrázku? Napíšte, na čo sa používa.",
+            "en": "What do you see in the picture? Describe its use."
+          },
+          "image": "/assets/images/elprav.jpg",
+          "placeholder": "Sem napíš, na čo sa používa...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_extra044",
+          "type": "text_input",
+          "text": {
+            "hu": "Mit lát a képen? Írja le, mire használható.",
+            "sk": "Čo vidíte na obrázku? Napíšte, na čo sa používa.",
+            "en": "What do you see in the picture? Describe its use."
+          },
+          "image": "/assets/images/uholnik.jpg",
+          "placeholder": "Sem napíš, na čo sa používa...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_extras044",
+          "type": "text_input",
+          "text": {
+            "hu": "Mit lát a képen? Írja le, mire használható.",
+            "sk": "Čo vidíte na obrázku? Napíšte, na čo sa používa.",
+            "en": "What do you see in the picture? Describe its use."
+          },
+          "image": "/assets/images/uholnik2.jpg",
+          "placeholder": "Sem napíš, na čo sa používa...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+
+        {
+          "id": "ep_q045",
+          "type": "single_choice",
+          "text": {
+            "hu": "Milyen vastagságú acéllemezek vágására használják a kézi ollót?",
+            "sk": "Ručné nožnice sa používajú na rezanie oceľových plechov do hrúbky:",
+            "en": "Hand shears are used for cutting steel sheets up to thickness:"
+          },
+          "options": [
+            { "key": "A", "text": {"hu": "0,7 mm", "sk": "0,7 mm", "en": "0.7 mm"} },
+            { "key": "B", "text": {"hu": "1,0 mm", "sk": "1,0 mm", "en": "1.0 mm"} },
+            { "key": "C", "text": {"hu": "2,5 mm", "sk": "2,5 mm", "en": "2.5 mm"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true,
+          "image": null
+        },
+        {
+          "id": "ep_q046",
+          "type": "single_choice",
+          "text": {
+            "hu": "A karos ollót milyen vastagságú lemezek vágására használják?",
+            "sk": "Pákové nožnice sa používajú na rezanie plechov:",
+            "en": "Lever shears are used for cutting sheets:"
+          },
+          "options": [
+            { "key": "A", "text": {"hu": "6 mm alatt", "sk": "do 6 mm", "en": "up to 6 mm"} },
+            { "key": "B", "text": {"hu": "6 mm felett", "sk": "nad 6 mm", "en": "over 6 mm"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true,
+          "image": null
+        },
+        {
+          "id": "ep_q047",
+          "type": "text_input",
+          "text": {
+            "hu": "Mi a különbség a fém és műanyag fűrészek között?",
+            "sk": "Aký je rozdiel medzi týmto náradím a pílami na plast?",
+            "en": "What is the difference between this tool and plastic saws?"
+          },
+          "image": "/assets/images/Obrpile.png",
+          "placeholder": "Napíš rozdiel...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q048",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel a kézi fémmegmunkálás szerszámait.",
+            "sk": "Popíšte nástroje na ručné spracovanie kovov.",
+            "en": "List the tools for manual metal processing."
+          },
+          "image": "/assets/images/rucobr.jpg",
+          "placeholder": "Napíš zoznam nástrojov...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q049",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel a kézi műanyag megmunkálás szerszámait.",
+            "sk": "Popíšte nástroje na ručné spracovanie plastov.",
+            "en": "List the tools for manual plastic processing."
+          },
+          "placeholder": "Napíš nástroje...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q050",
+          "type": "image_label",
+          "text": {
+            "hu": "Nevezze meg, mit lát a képen.",
+            "sk": "Pomenujte, čo vidíte na obrázku.",
+            "en": "Name what you see in the picture."
+          },
+          "image": "/assets/images/vrr.jpg",
+          "options": [
+            { "key": "A", "text": {"hu": "Körfűrész", "sk": "Kruhová píla", "en": "Circular saw"} },
+            { "key": "B", "text": {"hu": "Fúró", "sk": "Vŕtačka", "en": "Drill"} },
+            { "key": "C", "text": {"hu": "Csiszológép", "sk": "Brúska", "en": "Grinder"} }
+          ],
+          "correct": ["B"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q051",
+          "type": "text_input",
+          "text": {
+            "hu": "Írja le a műanyag hegesztés folyamatát.",
+            "sk": "Opíšte proces spájania plastov tavením alebo lepením.",
+            "en": "Describe the process of joining plastics by melting or gluing."
+          },
+          "image": "/assets/images/zvar.png",
+          "placeholder": "Napíš postup...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q052",
+          "type": "text_input",
+          "text": {
+            "hu": "Írja le a gipszkarton kézi feldolgozásának eszközeit és használatát.",
+            "sk": "Popíšte nástroje potrebné na ručné spracovanie sadrokartónu a ich použitie.",
+            "en": "Describe the tools used for manual drywall processing and their use."
+          },
+          "image": "/assets/images/sadrokart.webp",
+          "placeholder": "Napíš popis...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q053",
+          "type": "text_input",
+          "text": {
+            "hu": "Miért nem alkalmas a gipszkarton a mészfestésre?",
+            "sk": "Prečo nie je sadrokartón vhodný na vápenné maľovanie?",
+            "en": "Why is drywall not suitable for lime painting?"
+          },
+          "placeholder": "Sem napíš odpoveď...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q054",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel az alapvető mérő- és rajzeszközöket, valamint azok használatát.",
+            "sk": "Základné nástroje používané na meranie a kreslenie a ich použitie:",
+            "en": "List basic tools used for measuring and drawing and their use:"
+          },
+          "placeholder": "Napíš nástroje a ich funkciu...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q055",
+          "type": "text_input",
+          "text": {
+            "hu": "Írja le a fém, műanyag és gipszkarton anyagok fúrásának, vágásának, fűrészelésének lépéseit.",
+            "sk": "Popíšte postup vŕtania, rezania a pílenia kovov, plastov a sadrokartónu.",
+            "en": "Describe the steps for drilling, cutting, and sawing metals, plastics, and drywall."
+          },
+          "placeholder": "Napíš postup...",
+          "save_to_file": true,
+          "evaluated": false
+        }
+      ]
+    },
+
+
+
+
+    {
+      "section_id": "ep_section_06",
+      "title": "Maliarske a natieračské práce",
+      "questions": [
+        {
+          "id": "ep_q056",
+          "type": "text_input",
+          "text": {
+            "hu": "Nevezze meg az egyes ecseteket.",
+            "sk": "Pomenujte každý štetec.",
+            "en": "Name each brush."
+          },
+          "image": "/assets/images/stetce.jpg",
+          "placeholder": {
+            "hu": "Írja be az ecsetek nevét...",
+            "sk": "Sem napíš názvy štetcov...",
+            "en": "Write the names of the brushes..."
+          },
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q057",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel a festési munkákhoz használt további eszközöket.",
+            "sk": "Vymenujte ďalšie nástroje používané pri maliarskych prácach.",
+            "en": "List other tools used for painting work."
+          },
+          "placeholder": "Sem napíš zoznam nástrojov...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q058",
+          "type": "text_input",
+          "text": {
+            "hu": "Nevezze meg a csiszoláshoz és polírozáshoz használt segédeszközöket.",
+            "sk": "Pomenujte pomôcky na brúsenie a leštenie farieb.",
+            "en": "Name the tools used for sanding and polishing paint."
+          },
+          "image": "/assets/images/lestenie.jpg",
+          "placeholder": "Sem napíš názvy pomôcok...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q059",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel a vakolatok típusait és röviden jellemezze őket.",
+            "sk": "Omietky sa dajú vyrobiť rôznymi technológiami, rozlišujeme omietky:",
+            "en": "List the types of plasters and describe them briefly."
+          },
+          "placeholder": "VO – … / CO – … / SO – … / VCO – …",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q060",
+          "type": "text_input",
+          "text": {
+            "hu": "Ismertesse az új és régi vakolat előkészítésének lépéseit.",
+            "sk": "Prípravné práce pre omietkový podklad (nová a stará omietka):",
+            "en": "Describe the preparation steps for new and old plaster substrates."
+          },
+          "placeholder": "Napíš kroky prípravy...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q061",
+          "type": "text_input",
+          "text": {
+            "hu": "Miért fontos a gipszkarton alapozása festés előtt?",
+            "sk": "Prečo je dôležité napenetrovať sadrokartónový podklad pred maľovaním?",
+            "en": "Why is it important to prime drywall before painting?"
+          },
+          "placeholder": "Sem napíš vysvetlenie...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q062",
+          "type": "text_input",
+          "text": {
+            "hu": "Ismertesse a fa felületek festésének előkészítését (régi és új alapok).",
+            "sk": "Opíšte postup prípravy dreveného podkladu (staré aj nové povrchy) na natieranie.",
+            "en": "Describe the preparation process of wooden surfaces (old and new) for painting."
+          },
+          "image": "/assets/images/natier.jpg",
+          "placeholder": "Napíš postup...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q063",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel a fémfelületek festésének előkészítő lépéseit.",
+            "sk": "Opíšte postup prípravy kovového podkladu na nanášanie náteru.",
+            "en": "Describe the preparation steps for painting metal surfaces."
+          },
+          "placeholder": "Napíš postup...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q064",
+          "type": "text_input",
+          "text": {
+            "hu": "Írja le a festés lépéseit (belső és külső felületek).",
+            "sk": "Opíšte postup maľovania interiérov a vonkajších plôch.",
+            "en": "Describe the steps of painting interior and exterior surfaces."
+          },
+          "placeholder": "Napíš kroky maľovania...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q065",
+          "type": "single_choice",
+          "text": {
+            "hu": "A lapos ecsetek szélessége:",
+            "sk": "Ploché štetce sú široké:",
+            "en": "Flat brushes are wide:"
+          },
+          "options": [
+            { "key": "A", "text": {"hu": "5–16 cm", "sk": "5–16 cm", "en": "5–16 cm"} },
+            { "key": "B", "text": {"hu": "10 cm", "sk": "10 cm", "en": "10 cm"} },
+            { "key": "C", "text": {"hu": "3–15 cm", "sk": "3–15 cm", "en": "3–15 cm"} }
+          ],
+          "correct": ["A"],
+          "evaluated": true
+        },
+        {
+          "id": "ep_q066",
+          "type": "text_input",
+          "text": {
+            "hu": "Miért nem szabad a kefék sörtéinek elkopniuk?",
+            "sk": "Prečo sa štetiny na štetci nemôžu opotrebovať?",
+            "en": "Why must brush bristles not wear out?"
+          },
+          "placeholder": "Napíš odpoveď...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q067",
+          "type": "text_input",
+          "text": {
+            "hu": "Mi a különbség a rozsdaeltávolító és a rozsdaeltávolító paszta között?",
+            "sk": "Aký je rozdiel medzi odstraňovačom hrdze a pastou na odstraňovanie hrdze?",
+            "en": "What is the difference between rust remover and rust removal paste?"
+          },
+          "placeholder": "Napíš rozdiel...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q068",
+          "type": "text_input",
+          "text": {
+            "hu": "Írja le a régi festék lánggal történő eltávolításának folyamatát.",
+            "sk": "Ako odstrániť starý náter plameňom?",
+            "en": "Describe how to remove old paint using flame."
+          },
+          "placeholder": "Napíš postup...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q069",
+          "type": "text_input",
+          "text": {
+            "hu": "Sorolja fel a szerszámok megfelelő tárolásának és karbantartásának szempontjait.",
+            "sk": "Uveďte zásady správneho skladovania a údržby náradia.",
+            "en": "List the principles of proper tool storage and maintenance."
+          },
+          "placeholder": "Sem napíš zásady...",
+          "save_to_file": true,
+          "evaluated": false
+        }
+      ]
+    },
+
+
+
+
+
+    {
+      "section_id": "ep_section_07",
+      "title": "Zhrnutie a hodnotenie školského dňa",
+      "questions": [
+        {
+          "id": "ep_q070",
+          "type": "text_input",
+          "text": {
+            "hu": "Milyen hibákat követett el a napi feladatok megoldása során?",
+            "sk": "Aké chyby som pri riešení úloh počas školského dňa urobil(a)?",
+            "en": "What mistakes did I make during the school day while solving tasks?"
+          },
+          "placeholder": "Sem napíš svoje chyby alebo poznámky...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q071",
+          "type": "text_input",
+          "text": {
+            "hu": "Mit tanult ma, vagy miben kell még fejlődnie?",
+            "sk": "Čo som sa dnes naučil(a) alebo v čom sa potrebujem ešte zlepšiť?",
+            "en": "What did I learn today, or what do I still need to improve?"
+          },
+          "placeholder": "Sem napíš svoju reflexiu...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q072",
+          "type": "single_choice",
+          "text": {
+            "hu": "Értékeld a mai napod!",
+            "sk": "Ohodnoť svoj dnešný deň!",
+            "en": "Evaluate your day!"
+          },
+          "options": [
+            { "key": "A", "text": {"hu": "Nagyon jó", "sk": "Veľmi dobrý", "en": "Very good"} },
+            { "key": "B", "text": {"hu": "Jó", "sk": "Dobrý", "en": "Good"} },
+            { "key": "C", "text": {"hu": "Közepes", "sk": "Priemerný", "en": "Average"} },
+            { "key": "D", "text": {"hu": "Gyenge", "sk": "Slabý", "en": "Weak"} }
+          ],
+          "correct": [],
+          "evaluated": false
+        },
+        {
+          "id": "ep_q073",
+          "type": "text_input",
+          "text": {
+            "hu": "NOB értékelés (szóban vagy jeggyel):",
+            "sk": "Klasifikácia NOB (slovná alebo známka):",
+            "en": "NOB evaluation (verbal or grade):"
+          },
+          "placeholder": "Sem napíš slovné hodnotenie alebo známku...",
+          "save_to_file": true,
+          "evaluated": false
+        },
+        {
+          "id": "ep_q074",
+          "type": "text_input",
+          "text": {
+            "hu": "Megjegyzések, javaslatok vagy további megfigyelések:",
+            "sk": "Poznámky, návrhy alebo ďalšie postrehy:",
+            "en": "Comments, suggestions, or additional notes:"
+          },
+          "placeholder": "Sem napíš svoje poznámky...",
+          "save_to_file": true,
+          "evaluated": false
+        }
+      ]
+    }
+
+  ]
+}
