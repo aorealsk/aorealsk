@@ -1,53 +1,6 @@
 <?php
 session_start();
 
-$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && stripos($contentType, 'application/json') !== false) {
-    $rawInput = file_get_contents('php://input');
-    $payload = json_decode($rawInput, true);
-
-    $response = ['success' => false];
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        $response['message'] = 'Invalid JSON payload.';
-    } elseif (($payload['action'] ?? '') !== 'save_inputs' || !isset($payload['inputs']) || !is_array($payload['inputs'])) {
-        $response['message'] = 'Invalid request.';
-    } else {
-        $storageDir = dirname(__DIR__) . '/data/user_input_states';
-
-        if (!is_dir($storageDir) && !mkdir($storageDir, 0777, true) && !is_dir($storageDir)) {
-            $response['message'] = 'Unable to prepare storage.';
-        } else {
-            $storageFile = $storageDir . '/' . session_id() . '.json';
-
-            $dataToStore = [
-                'session_id' => session_id(),
-                'saved_at' => gmdate('c'),
-                'page' => isset($payload['page']) ? (int) $payload['page'] : null,
-                'inputs' => $payload['inputs'],
-            ];
-
-            $bytes = @file_put_contents(
-                $storageFile,
-                json_encode($dataToStore, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
-                LOCK_EX
-            );
-
-            if ($bytes === false) {
-                $response['message'] = 'Failed to write to storage.';
-            } else {
-                $response['success'] = true;
-                $response['file'] = basename($storageFile);
-            }
-        }
-    }
-
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit;
-}
-
 $tools = [
     1 => ['img' => 'eDiqymQZGc.png', 'name' => 'skladací meter'],
     2 => ['img' => 'h1hCqmeAlk.png', 'name' => 'vodováha'],
@@ -144,6 +97,86 @@ shuffle($chimneyOptions);
             background: #f5f5f5;
         }
 
+        .page-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .page-index {
+            width: 240px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .page-index-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .page-index-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .page-index-list a {
+            display: block;
+            width: 100%;
+            text-decoration: none;
+            color: #1f1f1f;
+            padding: 6px 8px 6px 12px;
+            border-left: 4px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        }
+
+        .page-index-list a:hover {
+            background: #f1f8ff;
+            border-color: #64b5f6;
+            color: #0d47a1;
+        }
+
+        .page-index-list a.active {
+            background: #e3f2fd;
+            border-color: #1976d2;
+            color: #0d47a1;
+            font-weight: 600;
+        }
+
+        .lang-switch {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            padding: 6px 8px;
+            z-index: 9999;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .lang-switch select {
+            border: 1px solid #d0d0d0;
+            padding: 6px 8px;
+            border-radius: 4px;
+            background: #fafafa;
+            cursor: pointer;
+        }
+
         h1 {
             margin-top: 0;
         }
@@ -191,6 +224,42 @@ shuffle($chimneyOptions);
         .page-indicator {
             margin-left: auto;
             font-weight: bold;
+        }
+
+        .submit-controls {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .submit-controls button {
+            padding: 12px 20px;
+            border: none;
+            background: #2e7d32;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .submit-controls button:disabled {
+            background: #9e9e9e;
+            cursor: not-allowed;
+        }
+
+        .submit-status {
+            font-weight: 600;
+            min-height: 1.2em;
+        }
+
+        .submit-status.success {
+            color: #2e7d32;
+        }
+
+        .submit-status.error {
+            color: #c62828;
         }
 
         .quiz-container {
@@ -259,12 +328,38 @@ shuffle($chimneyOptions);
         }
 
         @media (max-width: 700px) {
+            .page-layout {
+                flex-direction: column;
+            }
+
+                .lang-switch {
+                    position: static;
+                    width: 100%;
+                    margin-bottom: 20px;
+                }
+
+            .page-index {
+                position: static;
+                width: 100%;
+                max-height: none;
+            }
+
             .quiz-grid {
                 grid-template-columns: 1fr;
             }
         }
 
         @media (min-width: 701px) and (max-width: 1000px) {
+            .page-layout {
+                flex-direction: column;
+            }
+
+            .page-index {
+                position: static;
+                width: 100%;
+                max-height: none;
+            }
+
             .quiz-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -678,7 +773,7 @@ L - <input type="text" id="chimneyPart_L" name="chimneyPart_L"><br>
 <textarea id="effectiveIneffectiveChimneyHeight" name="effectiveIneffectiveChimneyHeight" rows="5" cols="33"></textarea><br>
 4. Vymenujte tvary prieduchov a popíšte ich podľa obrázka<br>
 <img src="images/chimneyflueopenings.jpg"><br>
-<textarea id="chimneyFlueOpening_1" name="chimneyFlueOpening_1" rows="5" cols="33"><br>
+<textarea id="chimneyFlueOpening_1" name="chimneyFlueOpening_1" rows="5" cols="33"></textarea><br>
 Popíšte, aký komínový prieduch je na obrázku<br>
 <img src="images/chimneyflueopenings2.jpg"><br>
 <textarea id="chimneyFlueOpening_2" name="chimneyFlueOpening_2" rows="5" cols="33"><br>
@@ -2323,9 +2418,96 @@ document.addEventListener('DOMContentLoaded', () => {
     const nodes = Array.from(body.childNodes);
     const pagesContainer = document.createElement('div');
     pagesContainer.id = 'pages-root';
+    // Language selector (persistent)
+    const langSwitch = document.createElement('div');
+    langSwitch.className = 'lang-switch';
+    const langSelect = document.createElement('select');
+    langSelect.setAttribute('aria-label', 'Language select');
+    const optSk = document.createElement('option'); optSk.value = 'sk'; optSk.textContent = 'Slovenský';
+    const optHu = document.createElement('option'); optHu.value = 'hu'; optHu.textContent = 'Magyar';
+    const optEn = document.createElement('option'); optEn.value = 'en'; optEn.textContent = 'English';
+    langSelect.appendChild(optSk);
+    langSelect.appendChild(optHu);
+    langSelect.appendChild(optEn);
+    langSwitch.appendChild(langSelect);
+    document.body.appendChild(langSwitch);
+    const layout = document.createElement('div');
+    layout.className = 'page-layout';
+
+    const indexNav = document.createElement('nav');
+    indexNav.className = 'page-index';
+    const indexTitle = document.createElement('div');
+    indexTitle.className = 'page-index-title';
+    indexTitle.textContent = 'Rýchla navigácia';
+    const indexListEl = document.createElement('ol');
+    indexListEl.className = 'page-index-list';
+    indexNav.appendChild(indexTitle);
+    indexNav.appendChild(indexListEl);
+
+    layout.appendChild(indexNav);
+    layout.appendChild(pagesContainer);
 
     const sections = [];
     let currentSection = null;
+    const serverScores = {
+        tool: Number(<?php echo (int) $toolScore; ?>) || 0,
+        chimney: Number(<?php echo (int) $chimneyScore; ?>) || 0,
+    };
+
+    // translations for UI strings
+    const translations = {
+        sk: {
+            prev: 'Predošlá strana',
+            next: 'Ďalšia strana',
+            submit: 'Odoslať odpovede',
+            quickNav: 'Rýchla navigácia',
+            saving: 'Ukladám odpovede...',
+            saved: 'Odpovede boli uložené.',
+            saveError: 'Ukladanie odpovedí zlyhalo.'
+        },
+        en: {
+            prev: 'Previous page',
+            next: 'Next page',
+            submit: 'Submit answers',
+            quickNav: 'Quick navigation',
+            saving: 'Saving answers...',
+            saved: 'Answers saved.',
+            saveError: 'Saving failed.'
+        },
+        hu: {
+            prev: 'Előző oldal',
+            next: 'Következő oldal',
+            submit: 'Válaszok elküldése',
+            quickNav: 'Gyors navigáció',
+            saving: 'Válaszok mentése...',
+            saved: 'Válaszok elmentve.',
+            saveError: 'Mentés sikertelen.'
+        }
+    };
+
+    let lang = localStorage.getItem('quiz_lang') || 'sk';
+    if (!translations[lang]) lang = 'sk';
+    langSelect.value = lang;
+
+    const t = (key) => {
+        return (translations[lang] && translations[lang][key]) ? translations[lang][key] : translations['sk'][key];
+    };
+
+    const updateUILabels = () => {
+        indexTitle.textContent = t('quickNav');
+        // update prev/next on all pages
+        document.querySelectorAll('.page-nav [data-role="prev"]').forEach(b => { b.textContent = t('prev'); });
+        document.querySelectorAll('.page-nav [data-role="next"]').forEach(b => { b.textContent = t('next'); });
+        if (submitButton) submitButton.textContent = t('submit');
+    };
+
+    langSelect.addEventListener('change', (e) => {
+        const newLang = e.target.value;
+        if (!translations[newLang]) return;
+        lang = newLang;
+        localStorage.setItem('quiz_lang', lang);
+        updateUILabels();
+    });
 
     const createSection = (pageNumber) => {
         currentSection = document.createElement('section');
@@ -2365,9 +2547,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (scriptNode) {
-        body.insertBefore(pagesContainer, scriptNode);
+        body.insertBefore(layout, scriptNode);
     } else {
-        body.appendChild(pagesContainer);
+        body.appendChild(layout);
     }
 
     const pages = Array.from(pagesContainer.querySelectorAll('.page'));
@@ -2380,6 +2562,10 @@ document.addEventListener('DOMContentLoaded', () => {
         Math.max((Number(<?php echo (int) $currentPage; ?>) || 1) - 1, 0),
         totalPages - 1
     );
+    let isSubmitting = false;
+    let submitButton = null;
+    let submitStatus = null;
+    const indexButtons = [];
 
     const showPage = (index) => {
         activeIndex = Math.min(Math.max(index, 0), totalPages - 1);
@@ -2390,6 +2576,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const activePage = pages[activeIndex];
         const prevBtn = activePage.querySelector('[data-role="prev"]');
         const nextBtn = activePage.querySelector('[data-role="next"]');
+                indexButtons.forEach((btn, idx) => {
+                    btn.classList.toggle('active', idx === activeIndex);
+                });
+
         const indicator = activePage.querySelector('.page-indicator');
 
         if (prevBtn) {
@@ -2405,14 +2595,118 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    pages.forEach((page) => {
+    const collectAnswers = () => {
+        const answers = {};
+        const radioGroups = {};
+        const fields = document.querySelectorAll('input, textarea, select');
+
+        fields.forEach((field, idx) => {
+            const fallbackKey = `field_${idx}`;
+            const key = field.id || field.name || fallbackKey;
+
+            if (field.type === 'radio') {
+                const groupKey = field.name || key;
+                if (!Object.prototype.hasOwnProperty.call(radioGroups, groupKey)) {
+                    radioGroups[groupKey] = '';
+                }
+                if (field.checked) {
+                    radioGroups[groupKey] = field.value;
+                }
+                return;
+            }
+
+            if (field.type === 'checkbox') {
+                answers[key] = field.checked ? 'true' : 'false';
+                return;
+            }
+
+            answers[key] = field.value != null ? String(field.value) : '';
+        });
+
+        Object.keys(radioGroups).forEach((groupKey) => {
+            answers[groupKey] = radioGroups[groupKey];
+        });
+
+        answers['$toolScore'] = String(serverScores.tool);
+        answers['$chimneyScore'] = String(serverScores.chimney);
+
+        return answers;
+    };
+
+    const setSubmitStatus = (message = '', type = '') => {
+        if (!submitStatus) {
+            return;
+        }
+        submitStatus.textContent = message;
+        submitStatus.classList.remove('success', 'error');
+        if (type) {
+            submitStatus.classList.add(type);
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!submitButton || isSubmitting) {
+            return;
+        }
+
+        isSubmitting = true;
+        submitButton.disabled = true;
+        setSubmitStatus(t('saving'));
+
+        try {
+            const response = await fetch('save_answers.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ answers: collectAnswers() }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Server vrátil chybu pri ukladaní.');
+            }
+
+            const payload = await response.json().catch(() => null);
+            if (!payload || payload.status !== 'success') {
+                const serverMessage = payload && payload.message ? payload.message : 'Ukladanie odpovedí zlyhalo.';
+                throw new Error(serverMessage);
+            }
+
+            const baseMessage = t('saved');
+            const detail = payload.file ? `${baseMessage} (${payload.file})` : baseMessage;
+            setSubmitStatus(detail, 'success');
+            submitButton.disabled = false;
+        } catch (error) {
+            setSubmitStatus(error.message || t('saveError'), 'error');
+            submitButton.disabled = false;
+        } finally {
+            isSubmitting = false;
+        }
+    };
+
+    pages.forEach((page, pageIndex) => {
+        const indexItem = document.createElement('li');
+        const indexLink = document.createElement('a');
+        indexLink.href = '#';
+        const heading = page.querySelector('h1');
+        const titleText = heading ? heading.textContent.trim() : `Strana ${pageIndex + 1}`;
+        const shortTitle = titleText.length > 60 ? `${titleText.slice(0, 57)}...` : titleText;
+        indexLink.textContent = `${pageIndex + 1}. ${shortTitle}`;
+        indexLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            showPage(pageIndex);
+        });
+        indexItem.appendChild(indexLink);
+        indexListEl.appendChild(indexItem);
+        indexButtons.push(indexLink);
+
         const nav = document.createElement('div');
         nav.className = 'page-nav';
 
         const prevBtn = document.createElement('button');
         prevBtn.type = 'button';
         prevBtn.dataset.role = 'prev';
-        prevBtn.textContent = 'Predošlá strana';
+        prevBtn.textContent = t('prev');
         prevBtn.addEventListener('click', () => {
             if (activeIndex > 0) {
                 showPage(activeIndex - 1);
@@ -2425,7 +2719,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextBtn = document.createElement('button');
         nextBtn.type = 'button';
         nextBtn.dataset.role = 'next';
-        nextBtn.textContent = 'Ďalšia strana';
+        nextBtn.textContent = t('next');
         nextBtn.addEventListener('click', () => {
             if (activeIndex < totalPages - 1) {
                 showPage(activeIndex + 1);
@@ -2436,9 +2730,28 @@ document.addEventListener('DOMContentLoaded', () => {
         nav.appendChild(indicator);
         nav.appendChild(nextBtn);
         page.appendChild(nav);
+
+        if (pageIndex === totalPages - 1) {
+            const submitWrapper = document.createElement('div');
+            submitWrapper.className = 'submit-controls';
+
+            submitButton = document.createElement('button');
+            submitButton.type = 'button';
+            submitButton.textContent = t('submit');
+            submitButton.addEventListener('click', handleSubmit);
+
+            submitStatus = document.createElement('div');
+            submitStatus.className = 'submit-status';
+
+            submitWrapper.appendChild(submitButton);
+            submitWrapper.appendChild(submitStatus);
+            page.appendChild(submitWrapper);
+        }
     });
 
     showPage(activeIndex);
+    // Apply translations to UI now that controls (prev/next/submit) are created
+    updateUILabels();
 });
 </script>
 </body>
