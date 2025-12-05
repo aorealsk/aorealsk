@@ -50,6 +50,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['quiz_type'] ?? '') === 'to
     }
 
     $toolMessage = $toolScore . ' správnych odpovedí z ' . count($tools) . '.';
+
+    // If this is an AJAX request, return JSON so client can update without reloading
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'quiz' => 'tools',
+            'message' => $toolMessage,
+            'score' => $toolScore,
+            'results' => $toolResults,
+        ]);
+        exit;
+    }
 }
 
 $toolOptions = array_column($tools, 'name');
@@ -62,7 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['quiz_type'] ?? '') === 'ch
     $postedAnswers = $_POST['answers'] ?? [];
 
     foreach ($chimneys as $id => $chimney) {
-        $selected = isset($postedAnswers[$id]) ? trim($postedAnswers[$id]) : '';
+        // store chimneys answers in the main "answers" array offset by 12
+        $answerIndex = $id + 12;
+        $selected = isset($postedAnswers[$answerIndex]) ? trim($postedAnswers[$answerIndex]) : '';
         $correct = $chimney['name'];
         $isCorrect = ($selected !== '' && $selected === $correct);
         if ($isCorrect) {
@@ -77,6 +91,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['quiz_type'] ?? '') === 'ch
     }
 
     $chimneyMessage = $chimneyScore . ' správnych odpovedí z ' . count($chimneys) . '.';
+
+    // If this is an AJAX request, return JSON so client can update without reloading
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+        header('Content-Type: application/json; charset=utf-8');
+        $ajaxResults = [];
+        foreach ($chimneyResults as $cid => $cres) {
+            $ajaxResults[$cid + 12] = $cres; // re-key to match form input names
+        }
+        echo json_encode([
+            'quiz' => 'chimneys',
+            'message' => $chimneyMessage,
+            'score' => $chimneyScore,
+            'results' => $ajaxResults,
+        ]);
+        exit;
+    }
 }
 
 $chimneyOptions = array_column($chimneys, 'name');
@@ -104,7 +134,7 @@ shuffle($chimneyOptions);
         }
 
         .page-index {
-            width: 240px;
+            width: 500px;
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -400,11 +430,9 @@ shuffle($chimneyOptions);
 1.	Do obrázkov pridajte názov murárskeho náradia:<br>
 <div class="quiz-container">
     <h1>Priraď obrázky k nástrojom</h1>
-    <?php if ($toolMessage): ?>
-        <div class="message"><?php echo htmlspecialchars($toolMessage, ENT_QUOTES, 'UTF-8'); ?></div>
-    <?php endif; ?>
+    <div id="toolsMessage" class="message"><?php if ($toolMessage) echo htmlspecialchars($toolMessage, ENT_QUOTES, 'UTF-8'); ?></div>
 
-    <form method="post">
+    <form method="post" id="toolsForm">
         <input type="hidden" name="quiz_type" value="tools">
         <input type="hidden" name="current_page" value="2">
         <div class="quiz-grid">
@@ -776,7 +804,7 @@ L - <input type="text" id="chimneyPart_L" name="chimneyPart_L"><br>
 <textarea id="chimneyFlueOpening_1" name="chimneyFlueOpening_1" rows="5" cols="33"></textarea><br>
 Popíšte, aký komínový prieduch je na obrázku<br>
 <img src="images/chimneyflueopenings2.jpg"><br>
-<textarea id="chimneyFlueOpening_2" name="chimneyFlueOpening_2" rows="5" cols="33"><br>
+<textarea id="chimneyFlueOpening_2" name="chimneyFlueOpening_2" rows="5" cols="33"></textarea><br>
 <h3>Postup nadobúdania zručnosti:</h3>
 1.	Popíšte zásady dobrého ťahu komínov<br>
 <textarea id="describePrinciples_GoodChimneyCover" name="describePrinciples_GoodChimneyCover" rows="5" cols="33"></textarea><br>
@@ -800,20 +828,20 @@ Popíšte, aký komínový prieduch je na obrázku<br>
 1.  Priraďte správne názvoslovie časti komína k obrázkom:<br>
 <div class="quiz-container">
     <h1>Priraď obrázky k komínom</h1>
-    <?php if ($chimneyMessage): ?>
-        <div class="message"><?php echo htmlspecialchars($chimneyMessage, ENT_QUOTES, 'UTF-8'); ?></div>
-    <?php endif; ?>
+    <div id="chimneysMessage" class="message"><?php if ($chimneyMessage) echo htmlspecialchars($chimneyMessage, ENT_QUOTES, 'UTF-8'); ?></div>
 
-    <form method="post">
+    <form method="post" id="chimneysForm">
         <input type="hidden" name="quiz_type" value="chimneys">
         <input type="hidden" name="current_page" value="14">
         <div class="quiz-grid">
         <?php foreach ($chimneys as $id => $chimney):
-            $chimneySelectedValue = $chimneyResults[$id]['selected'] ?? ((($_POST['quiz_type'] ?? '') === 'chimneys') ? ($_POST['answers'][$id] ?? '') : '');
+            // offset chimney answer indexes so they don't overlap with tools (12 items)
+            $answerIndex = $id + 12;
+            $chimneySelectedValue = $chimneyResults[$id]['selected'] ?? ((($_POST['quiz_type'] ?? '') === 'chimneys') ? ($_POST['answers'][$answerIndex] ?? '') : '');
         ?>
             <div class="question">
                 <img src="images/<?php echo htmlspecialchars($chimney['img'], ENT_QUOTES, 'UTF-8'); ?>" alt="Komín <?php echo $id; ?>" class="chimney-image">
-                <select name="answers[<?php echo $id; ?>]">
+                <select name="answers[<?php echo $answerIndex; ?>]">
                     <option value=""> . . . </option>
                     <?php foreach ($chimneyOptions as $option): ?>
                     <option value="<?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>"
@@ -2449,7 +2477,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sections = [];
     let currentSection = null;
-    const serverScores = {
+    var serverScores = window.serverScores = {
         tool: Number(<?php echo (int) $toolScore; ?>) || 0,
         chimney: Number(<?php echo (int) $chimneyScore; ?>) || 0,
     };
@@ -2752,6 +2780,62 @@ document.addEventListener('DOMContentLoaded', () => {
     showPage(activeIndex);
     // Apply translations to UI now that controls (prev/next/submit) are created
     updateUILabels();
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    function handleAjaxForm(form, messageId){
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+            var formData = new FormData(form);
+            fetch(form.getAttribute('action') || window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(function(resp){ return resp.json(); })
+            .then(function(data){
+                var msgEl = document.getElementById(messageId);
+                if (msgEl) {
+                    msgEl.textContent = data.message || '';
+                    msgEl.classList.remove('error');
+                    msgEl.classList.add('success');
+                }
+                // update shared server-side scores so saving includes them
+                try {
+                    if (data && data.quiz) {
+                        if (data.quiz === 'tools') {
+                            if (typeof window.serverScores === 'object') window.serverScores.tool = Number(data.score) || 0;
+                        } else if (data.quiz === 'chimneys') {
+                            if (typeof window.serverScores === 'object') window.serverScores.chimney = Number(data.score) || 0;
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Unable to update serverScores', err);
+                }
+                var results = data.results || {};
+                for (var id in results){
+                    if (!results.hasOwnProperty(id)) continue;
+                    var sel = form.querySelector('select[name="answers['+id+']"]');
+                    if (!sel) continue;
+                    var parent = sel.closest('.question');
+                    if (!parent) parent = sel.parentElement;
+                    var existing = parent.querySelector('.feedback');
+                    if (existing) existing.remove();
+                    var div = document.createElement('div');
+                    div.className = 'feedback ' + (results[id].isCorrect ? 'correct' : 'wrong');
+                    div.textContent = results[id].isCorrect ? 'Správne' : 'Správna odpoveď: ' + results[id].correct;
+                    parent.appendChild(div);
+                }
+            }).catch(function(err){
+                console.error('Quiz AJAX error', err);
+            });
+        });
+    }
+
+    var tf = document.getElementById('toolsForm');
+    if (tf) handleAjaxForm(tf,'toolsMessage');
+    var cf = document.getElementById('chimneysForm');
+    if (cf) handleAjaxForm(cf,'chimneysMessage');
 });
 </script>
 </body>
